@@ -6,4 +6,6 @@ import java.util.List;
 public interface ShortTermContextRepository {
 
   List<ShortTermContext> fetchBy(String sessionId);
+
+  void append(String sessionId, ShortTermContext newContext);
 }

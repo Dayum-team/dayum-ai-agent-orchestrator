@@ -21,5 +21,9 @@ public class ContextStoreService {
     return new ConversationContext(memberId, sessionId, shortTermContexts, rollingSummary);
   }
 
-  public void update(String sessionId, ConversationContext context, String result) {}
+  public void update(String sessionId, ConversationContext context, String userMessage, String response) {
+    var newContext = new ShortTermContext(userMessage, response);
+    shortTermContextRepository.append(sessionId, newContext);
+    rollingSummaryRepository.update(sessionId, context.rollingSummary(), newContext);
+  }
 }

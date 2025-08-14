@@ -12,4 +12,7 @@ public class ShortTermContextRedisRepository implements ShortTermContextReposito
   public List<ShortTermContext> fetchBy(String sessionId) {
     return List.of();
   }
+
+  @Override
+  public void append(String sessionId, ShortTermContext newContext) {}
 }
