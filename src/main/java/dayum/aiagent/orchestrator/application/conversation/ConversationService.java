@@ -16,7 +16,7 @@ public class ConversationService {
   public String chat(String memberId, String sessionId, String userMessage) {
     ConversationContext context = contextStoreService.fetchBeforeContext(memberId, sessionId);
     String result = orchestrator.runTurn(context, userMessage);
-    contextStoreService.update(sessionId, context, result);
+    contextStoreService.update(sessionId, context, userMessage, result);
     return result;
   }
 }

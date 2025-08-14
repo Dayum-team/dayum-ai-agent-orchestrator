@@ -13,17 +13,17 @@ import org.springframework.stereotype.Service;
 public class ContextStoreService {
 
   private final ShortTermContextRepository shortTermContextRepository;
-  private final RollingSummaryRepository rollingSummaryRepository;
+  private final RollingSummaryService rollingSummaryService;
 
   public ConversationContext fetchBeforeContext(String memberId, String sessionId) {
     List<ShortTermContext> shortTermContexts = shortTermContextRepository.fetchBy(sessionId);
-    String rollingSummary = rollingSummaryRepository.fetchBy(sessionId);
+    String rollingSummary = rollingSummaryService.fetchBy(sessionId);
     return new ConversationContext(memberId, sessionId, shortTermContexts, rollingSummary);
   }
 
   public void update(String sessionId, ConversationContext context, String userMessage, String response) {
     var newContext = new ShortTermContext(userMessage, response);
     shortTermContextRepository.append(sessionId, newContext);
-    rollingSummaryRepository.update(sessionId, context.rollingSummary(), newContext);
+    rollingSummaryService.update(sessionId, context.rollingSummary(), newContext);
   }
 }
