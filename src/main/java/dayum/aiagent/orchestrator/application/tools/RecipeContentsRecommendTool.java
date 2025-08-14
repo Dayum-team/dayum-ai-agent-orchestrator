@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecommendRecipeTool implements Tool<Object, Object> {
+public class RecipeContentsRecommendTool implements Tool<Object, Object> {
 
   private final DayumApiClient dayumApiClient;
 

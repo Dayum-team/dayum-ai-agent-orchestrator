@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GenerateRecipeTool implements Tool<Object, Object> {
+public class RecipeGenerateTool implements Tool<Object, Object> {
 
   private final ClovaStudioChatClient clovaStudioChatClient;
 
