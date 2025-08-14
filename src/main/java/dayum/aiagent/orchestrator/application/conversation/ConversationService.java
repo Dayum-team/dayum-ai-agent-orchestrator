@@ -13,7 +13,7 @@ public class ConversationService {
   private final Orchestrator orchestrator;
   private final ContextStoreService contextStoreService;
 
-  public String chat(String memberId, String sessionId, String userMessage) {
+  public String chat(long memberId, String sessionId, String userMessage) {
     ConversationContext context = contextStoreService.fetchBeforeContext(memberId, sessionId);
     String result = orchestrator.runTurn(context, userMessage);
     contextStoreService.update(sessionId, context, userMessage, result);

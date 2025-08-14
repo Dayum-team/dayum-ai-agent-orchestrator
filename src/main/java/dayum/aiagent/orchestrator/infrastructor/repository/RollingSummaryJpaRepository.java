@@ -10,4 +10,7 @@ public class RollingSummaryJpaRepository implements RollingSummaryRepository {
   public String fetchBy(String sessionId) {
     return "";
   }
+
+  @Override
+  public void update(String sessionId, String rollingSummary) {}
 }

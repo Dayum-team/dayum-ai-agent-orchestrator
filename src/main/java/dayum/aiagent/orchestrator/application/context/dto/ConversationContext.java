@@ -3,7 +3,7 @@ package dayum.aiagent.orchestrator.application.context.dto;
 import java.util.List;
 
 public record ConversationContext(
+    long memberId,
     String sessionId,
-    String memberId,
     List<ShortTermContext> shortTermContexts,
     String rollingSummary) {}
