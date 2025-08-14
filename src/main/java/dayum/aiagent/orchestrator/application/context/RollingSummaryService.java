@@ -20,7 +20,7 @@ public class RollingSummaryService {
   public void update(String sessionId, String beforeRollingSummary, ShortTermContext newContext) {
     var rollingSummary =
         clovaStudioChatClient.summary(
-            beforeRollingSummary, newContext.userMessage(), newContext.userMessage());
+            beforeRollingSummary, newContext.userMessage(), newContext.response());
     rollingSummaryRepository.update(sessionId, rollingSummary);
   }
 }
