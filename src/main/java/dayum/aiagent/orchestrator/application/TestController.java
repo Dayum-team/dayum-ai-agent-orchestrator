@@ -18,8 +18,7 @@ public class TestController {
 
   @PostMapping("/chat/test")
   public String testChat(@RequestBody TestMessage message) {
-    return message.toString();
-    // return conversationService.chat(message.getMemberId(), message.getSession(), message.getUserMessage());
+    return conversationService.chat(message.getMemberId(), message.getSession(), message.getUserMessage());
   }
 
   @Data
