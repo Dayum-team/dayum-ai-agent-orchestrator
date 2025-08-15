@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import java.util.List;
 
 public record ChatCompletionResponse(
-    String role, String message, @Nullable List<ToolCalls> toolCalls) {
+    String role, String message, @Nullable List<SelectedFunction> functions) {
 
-  public record ToolCalls(String name, String partialJson) {}
+  public record SelectedFunction(String name, String arguments) {}
 }

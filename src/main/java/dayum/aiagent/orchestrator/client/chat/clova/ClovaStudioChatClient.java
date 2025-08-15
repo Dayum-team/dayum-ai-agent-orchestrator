@@ -8,6 +8,7 @@ import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema.*;
 import java.util.List;
 import java.util.UUID;
 
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -23,7 +24,8 @@ public class ClovaStudioChatClient implements ChatClient {
     return null;
   }
 
-  public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage, String context) {
+  public ChatCompletionResponse chatCompletion(
+      String systemMessage, String userMessage, String context) {
     return null;
   }
 
@@ -33,13 +35,16 @@ public class ClovaStudioChatClient implements ChatClient {
   }
 
   private ClovaChatCompletionResponse sendRequest(ClovaChatCompletionRequest request) {
-    return restClient
-        .post()
-        .uri(properties.getBaseUrl())
-        .header("Authorization", "Bearer " + properties.getApiKey())
-        .header("X-NCP-CLOVASTUDIO-REQUEST-ID", UUID.randomUUID().toString())
-        .body(request)
-        .retrieve()
-        .body(ClovaChatCompletionResponse.class);
+    return Try.ofCallable(
+            () ->
+                restClient
+                    .post()
+                    .uri(properties.getBaseUrl())
+                    .header("Authorization", "Bearer " + properties.getApiKey())
+                    .header("X-NCP-CLOVASTUDIO-REQUEST-ID", UUID.randomUUID().toString())
+                    .body(request)
+                    .retrieve()
+                    .body(ClovaChatCompletionResponse.class))
+        .getOrElseThrow(() -> new RuntimeException());
   }
 }

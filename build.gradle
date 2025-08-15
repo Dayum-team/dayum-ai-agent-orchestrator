@@ -35,6 +35,9 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:3.1.0'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0'
 
+    // FP
+    implementation 'io.vavr:vavr:0.10.7'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
