@@ -6,5 +6,5 @@ import java.util.List;
 public record ChatCompletionResponse(
     String role, String message, @Nullable List<SelectedFunction> functions) {
 
-  public record SelectedFunction(String name, String arguments) {}
+  public record SelectedFunction(String id, String name, String arguments) {}
 }
