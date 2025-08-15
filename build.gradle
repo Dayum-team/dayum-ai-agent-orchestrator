@@ -27,6 +27,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Persistence
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // AWS
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:3.1.0'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 

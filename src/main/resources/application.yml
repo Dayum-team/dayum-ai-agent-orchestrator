@@ -4,3 +4,59 @@ server:
 spring:
   application:
     name: dayum-ai-agent-orchestrator
+  profiles:
+    active: local
+  cloud.aws:
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${ACCESS_TOKEN}
+      secret-key: ${SECRET_TOKEN}
+    s3:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: ${SPRING_JPA_FORMAT_SQL:false}
+        dialect: org.hibernate.dialect.MySQLDialect
+        default_batch_fetch_size: 1000
+
+ncp:
+  access-key: ${ncp.access-key}
+  secret-key: ${ncp.secret-key}
+  clova:
+    base-url: ${ncp.clova.base-url}
+    api-key: ${ncp.clova.api-key}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: 'aws-secretsmanager:dayum/server/dev'
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/dayum
+    username: dayum2
+    password: dayum2_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: 'aws-secretsmanager:dayum/server/prod'
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:mysql://${mysql.host}:${mysql.port}/dayum
+    username: ${mysql.username}
+    password: ${mysql.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
