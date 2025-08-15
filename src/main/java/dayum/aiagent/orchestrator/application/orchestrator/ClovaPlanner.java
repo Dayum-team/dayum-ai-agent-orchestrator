@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ClovaPlanner implements Planner {
+
   private final ClovaStudioChatClient clovaStudioChatClient;
 
   @Override
@@ -19,6 +20,8 @@ public class ClovaPlanner implements Planner {
       String userQuery,
       ConversationContext context,
       LoopContext loopContext) {
+
+
     return null;
   }
 }
