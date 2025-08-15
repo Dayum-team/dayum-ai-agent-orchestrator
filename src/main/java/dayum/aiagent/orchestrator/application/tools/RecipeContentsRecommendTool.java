@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> {
 
+  private static final int RECOMMEND_MAX_COUNT = 5;
   private final DayumApiClient dayumApiClient;
 
   @Override
@@ -47,7 +48,7 @@ public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> 
   @Override
   public List<RecipeContentsRecommendResponse> execute(
       ConversationContext context, RecipeGenerateRequest request) {
-    return dayumApiClient.recommendContentsBy(request.ingredients()).stream()
+    return dayumApiClient.recommendContentsBy(request.ingredients(), RECOMMEND_MAX_COUNT).stream()
         .map(
             contents ->
                 new RecipeContentsRecommendResponse(

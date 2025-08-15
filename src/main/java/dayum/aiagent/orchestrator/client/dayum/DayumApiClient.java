@@ -16,13 +16,13 @@ public class DayumApiClient {
   private final DayumServerProperties dayumProperties;
   private final RestClient restClient;
 
-  public List<RecommendContentsResponse> recommendContentsBy(List<Ingredient> ingredients) {
+  public List<RecommendContentsResponse> recommendContentsBy(List<Ingredient> ingredients, int maxCount) {
     var response =
         restClient
             .post()
             .uri(dayumProperties.getBaseUrl() + "/internal/api/contents/recommended")
             .header("INTERNAL-API-KEY", dayumProperties.getApiKey())
-            .body(new RecommendContentsRequest(ingredients))
+            .body(new RecommendContentsRequest(ingredients, maxCount))
             .retrieve()
             .body(
                 new ParameterizedTypeReference<
