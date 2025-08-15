@@ -3,6 +3,7 @@ package dayum.aiagent.orchestrator.client.chat.clova;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionRequest;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema.*;
 import java.util.List;
 import java.util.UUID;
@@ -18,12 +19,18 @@ public class ClovaStudioChatClient implements ChatClient {
   private final ClovaStudioProperties properties;
   private final RestClient restClient;
 
-  public void chatCompletion(String systemMessage, String userMessage) {}
+  public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage) {
+    return null;
+  }
 
-  public void chatCompletion(String systemMessage, String userMessage, String context) {}
+  public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage, String context) {
+    return null;
+  }
 
-  public void chatCompletion(
-      String systemMessage, String userMessage, String context, List<ToolSchema> toolSchemas) {}
+  public ChatCompletionResponse chatCompletion(
+      String systemMessage, String userMessage, String context, List<ToolSchema> toolSchemas) {
+    return null;
+  }
 
   private ClovaChatCompletionResponse sendRequest(ClovaChatCompletionRequest request) {
     return restClient
