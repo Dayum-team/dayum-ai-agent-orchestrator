@@ -9,7 +9,8 @@ public interface ChatClient {
 
   ChatCompletionResponse chatCompletion(String systemMessage, String userMessage);
 
-  ChatCompletionResponse chatCompletion(String systemMessage, String userMessage, ConversationContext context);
+  ChatCompletionResponse chatCompletion(
+      String systemMessage, String userMessage, ConversationContext context);
 
   ChatCompletionResponse chatCompletion(
       String systemMessage,

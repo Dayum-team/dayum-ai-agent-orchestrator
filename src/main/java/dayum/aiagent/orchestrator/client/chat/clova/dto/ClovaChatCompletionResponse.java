@@ -1,9 +1,8 @@
 package dayum.aiagent.orchestrator.client.chat.clova.dto;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import java.util.List;
 
 public record ClovaChatCompletionResponse(Status status, Result result) {
   public record Status(String code, String message) {}

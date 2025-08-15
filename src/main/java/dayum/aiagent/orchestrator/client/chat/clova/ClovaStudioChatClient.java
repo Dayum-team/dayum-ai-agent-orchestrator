@@ -79,7 +79,13 @@ public class ClovaStudioChatClient implements ChatClient {
   private ChatCompletionResponse convert(ClovaChatCompletionResponse response) {
     return new ChatCompletionResponse(
         response.result().message().role(),
-        response.result().message().content().replaceAll("```json", "").replaceAll("```", "").trim(),
+        response
+            .result()
+            .message()
+            .content()
+            .replaceAll("```json", "")
+            .replaceAll("```", "")
+            .trim(),
         response.result().message().toolCalls().stream()
             .map(
                 toolCall ->
