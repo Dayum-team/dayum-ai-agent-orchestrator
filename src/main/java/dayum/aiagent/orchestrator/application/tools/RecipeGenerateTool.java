@@ -2,7 +2,6 @@ package dayum.aiagent.orchestrator.application.tools;
 
 import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
-import dayum.aiagent.orchestrator.application.tools.model.response.RecipeGenerateResponse;
 import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +42,7 @@ public class RecipeGenerateTool implements Tool<RecipeGenerateRequest> {
   }
 
   @Override
-  public RecipeGenerateResponse execute(
-      ConversationContext context, RecipeGenerateRequest request) {
-    // TODO: Not Implemented
-    return null;
+  public String execute(ConversationContext context, RecipeGenerateRequest request) {
+    return chatClientService.generateDietRecipes(context, request.ingredients());
   }
 }

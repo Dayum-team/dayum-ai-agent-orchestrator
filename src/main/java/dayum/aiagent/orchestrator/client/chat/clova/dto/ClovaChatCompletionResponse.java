@@ -2,17 +2,21 @@ package dayum.aiagent.orchestrator.client.chat.clova.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
 public record ClovaChatCompletionResponse(Status status, Result result) {
   public record Status(String code, String message) {}
 
   public record Result(
       Message message,
-      String stopReason,
+      String finishReason,
       Integer inputLength,
       Integer outputLength,
       List<AiFilter> aiFilter) {}
 
-  public record Message(String role, String content, List<ToolCalls> toolCalls) {}
+  public record Message(
+      String role, String content, @JsonSetter(nulls = Nulls.AS_EMPTY) List<ToolCalls> toolCalls) {}
 
   public record AiFilter(String groupName, String name, Double score, String result) {}
 
