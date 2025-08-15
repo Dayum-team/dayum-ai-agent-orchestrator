@@ -1,3 +1,8 @@
 package dayum.aiagent.orchestrator.application.tools.model.vo;
 
-public record Ingredient(String name, String quantity) {}
+public record Ingredient(String name, String quantity) {
+
+  public Ingredient(String name) {
+    this(name, "");
+  }
+}
