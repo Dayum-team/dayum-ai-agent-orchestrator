@@ -1,12 +1,15 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
-import dayum.aiagent.orchestrator.client.chat.ChatClientService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import java.util.List;
 
-@Component
-@RequiredArgsConstructor
-public class Planner {
+import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 
-  private final ChatClientService chatClientService;
+public interface Planner {
+
+  Plan requestPlan(
+      List<ToolSignatureSchema.ToolSchema> toolSchemas,
+      String userQuery,
+      ConversationContext context,
+      LoopContext loopContext);
 }
