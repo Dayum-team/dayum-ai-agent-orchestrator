@@ -18,7 +18,7 @@ public class Orchestrator {
 
   // private final List<Validator> validators;
 
-  public String runTurn(ConversationContext context, String userQuery) {
+  public String runTurn(ConversationContext context, String userMessage) {
     LoopContext loopContext = new LoopContext();
 
     while (loopContext.canContinue()) {
@@ -26,7 +26,7 @@ public class Orchestrator {
       List<ToolSignatureSchema.ToolSchema> schemas = toolRegistry.getToolSchemaList();
 
       // 2. Plan 요청
-      Plan plan = planner.requestPlan(schemas, userQuery, context, loopContext);
+      Plan plan = planner.requestPlan(schemas, userMessage, context, loopContext);
 
       // 3-1. Tool 실행
       if (plan.isRequiresToolExecution()) {
@@ -43,6 +43,8 @@ public class Orchestrator {
         if (plan.isFinalAnswer()) {
           break;
         }
+      } else{
+
       }
     }
     return "";

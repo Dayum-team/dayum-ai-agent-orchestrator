@@ -11,7 +11,7 @@ public class LoopContext {
   private List<Message> messages = new ArrayList<>();
 
   // 최대 반복 횟수
-  private static final int MAX_ITERATIONS = 10;
+  private static final int MAX_ITERATIONS = 5;
 
   public void addRequest(String content) {
     messages.add(new Message(MessageType.REQUEST, content));
