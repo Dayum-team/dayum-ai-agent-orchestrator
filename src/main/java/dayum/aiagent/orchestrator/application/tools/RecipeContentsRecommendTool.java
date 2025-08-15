@@ -5,6 +5,8 @@ import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerate
 import dayum.aiagent.orchestrator.application.tools.model.response.RecipeContentsRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import dayum.aiagent.orchestrator.client.dayum.DayumApiClient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -43,9 +45,25 @@ public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> 
   }
 
   @Override
-  public RecipeContentsRecommendResponse execute(
+  public List<RecipeContentsRecommendResponse> execute(
       ConversationContext context, RecipeGenerateRequest request) {
-    // TODO: Not Implemented
-    return null;
+    return dayumApiClient.recommendContentsBy(request.ingredients()).stream()
+        .map(
+            contents ->
+                new RecipeContentsRecommendResponse(
+                    contents.thumbnailUrl(),
+                    contents.url(),
+                    contents.ingredients().stream()
+                        .map(
+                            ingredient ->
+                                new Ingredient(
+                                    ingredient.name(),
+                                    ingredient.quantity() + " x " + ingredient.standardQuantity()))
+                        .toList(),
+                    contents.calories(),
+                    contents.carbohydrates(),
+                    contents.proteins(),
+                    contents.fats()))
+        .toList();
   }
 }
