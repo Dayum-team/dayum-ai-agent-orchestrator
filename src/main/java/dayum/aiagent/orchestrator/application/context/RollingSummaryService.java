@@ -2,7 +2,7 @@ package dayum.aiagent.orchestrator.application.context;
 
 import dayum.aiagent.orchestrator.application.context.dto.ShortTermContext;
 import dayum.aiagent.orchestrator.application.context.port.RollingSummaryRepository;
-import dayum.aiagent.orchestrator.client.chat.ClovaStudioChatClient;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class RollingSummaryService {
 
   private final RollingSummaryRepository rollingSummaryRepository;
-  private final ClovaStudioChatClient clovaStudioChatClient;
+  private final ChatClientService chatClientService;
 
   public String fetchBy(String sessionId) {
     return rollingSummaryRepository.fetchBy(sessionId);
@@ -19,7 +19,7 @@ public class RollingSummaryService {
 
   public void update(String sessionId, String beforeRollingSummary, ShortTermContext newContext) {
     var rollingSummary =
-        clovaStudioChatClient.summary(
+        chatClientService.summary(
             beforeRollingSummary, newContext.userMessage(), newContext.response());
     rollingSummaryRepository.update(sessionId, rollingSummary);
   }

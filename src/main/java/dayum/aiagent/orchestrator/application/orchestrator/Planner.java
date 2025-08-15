@@ -1,6 +1,6 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
-import dayum.aiagent.orchestrator.client.chat.ClovaStudioChatClient;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Planner {
 
-  private final ClovaStudioChatClient clovaStudioChatClient;
+  private final ChatClientService chatClientService;
 }
