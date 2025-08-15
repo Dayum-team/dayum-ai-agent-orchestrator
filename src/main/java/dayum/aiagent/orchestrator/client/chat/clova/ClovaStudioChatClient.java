@@ -21,16 +21,19 @@ public class ClovaStudioChatClient implements ChatClient {
   private final RestClient restClient;
 
   public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage) {
+    // TODO: Not Implemented
     return null;
   }
 
   public ChatCompletionResponse chatCompletion(
       String systemMessage, String userMessage, String context) {
+    // TODO: Not Implemented
     return null;
   }
 
   public ChatCompletionResponse chatCompletion(
       String systemMessage, String userMessage, String context, List<ToolSchema> toolSchemas) {
+    // TODO: Not Implemented
     return null;
   }
 
