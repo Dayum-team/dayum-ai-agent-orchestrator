@@ -46,7 +46,7 @@ public class ClovaStudioChatClient implements ChatClient {
                     }
                   });
       var request =
-          ClovaChatCompletionRequest.of(systemMessage, contextMessage + "\n" + userMessage);
+          ClovaChatCompletionRequest.of(systemMessage, contextMessage + userMessage);
       var response = this.sendRequest(request);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);

@@ -12,6 +12,7 @@ public class ChatPrompt {
       - A: userMessage: {{userMessage}}
       - B: receivedMessage: {{receivedMessage}}
       {{/each}}
+      
       """;
 
   public static class GenerateRecipesPrompt {
