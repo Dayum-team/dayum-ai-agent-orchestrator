@@ -3,4 +3,4 @@ server:
 
 spring:
   application:
-    name: dayum-orchestrator-server
+    name: dayum-ai-agent-orchestrator
