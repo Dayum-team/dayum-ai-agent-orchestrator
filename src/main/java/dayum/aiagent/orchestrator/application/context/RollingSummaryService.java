@@ -20,7 +20,7 @@ public class RollingSummaryService {
   public void update(String sessionId, String beforeRollingSummary, ShortTermContext newContext) {
     var rollingSummary =
         chatClientService.summary(
-            beforeRollingSummary, newContext.userMessage(), newContext.response());
+            beforeRollingSummary, newContext.userMessage(), newContext.receivedMessage());
     rollingSummaryRepository.update(sessionId, rollingSummary);
   }
 }
