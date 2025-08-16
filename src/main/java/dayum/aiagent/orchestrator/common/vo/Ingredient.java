@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.tools.model.vo;
+package dayum.aiagent.orchestrator.common.vo;
 
 public record Ingredient(String name, String quantity) {
 

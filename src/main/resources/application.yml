@@ -32,6 +32,10 @@ ncp:
     base-url: ${ncp.clova.base-url}
     api-key: ${ncp.clova.api-key}
 
+dayum-server:
+  base-url: ${dayum-server.base-url}
+  api-key: ${dayum-server.api-key}
+
 ---
 spring:
   config:
