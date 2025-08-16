@@ -2,7 +2,6 @@ package dayum.aiagent.orchestrator.application.tools;
 
 import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeContentsRecommendRequest;
-import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
 import dayum.aiagent.orchestrator.application.tools.model.response.RecipeContentsRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import dayum.aiagent.orchestrator.client.dayum.DayumApiClient;
@@ -33,10 +32,12 @@ public class RecipeContentsRecommendTool implements Tool<RecipeContentsRecommend
     return ToolSignatureSchema.ObjectSchema.object()
         .property(
             "ingredients",
-            ToolSignatureSchema.ObjectSchema.object()
-                .property("name", ToolSignatureSchema.StringSchema.string().build())
-                .property("quantity", ToolSignatureSchema.StringSchema.string().build())
-                .required("name")
+            ToolSignatureSchema.ArraySchema.array(
+                    ToolSignatureSchema.ObjectSchema.object()
+                        .property("name", ToolSignatureSchema.StringSchema.string().build())
+                        .property("quantity", ToolSignatureSchema.StringSchema.string().build())
+                        .required("name")
+                        .build())
                 .build())
         .build();
   }
