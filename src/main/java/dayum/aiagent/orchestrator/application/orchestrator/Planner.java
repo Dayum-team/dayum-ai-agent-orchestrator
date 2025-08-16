@@ -1,12 +1,17 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.client.chat.ChatClientService;
+import dayum.aiagent.orchestrator.client.chat.dto.PlanningPlaybookResponse;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,7 +31,14 @@ public class Planner {
             this.selectPlaybooks(List.of(PlaybookType.GENERATE_DIET_RECIPE));
       };
     }
-    return List.of();
+    var catalogMap =
+        playbooks.stream().collect(Collectors.toMap(Playbook::getType, Playbook::getCatalog));
+    List<PlaybookType> plan =
+        chatClientService.planningPlaybooks(catalogMap).steps().stream()
+            .sorted(Comparator.comparingInt(PlanningPlaybookResponse.Step::priority))
+            .map(step -> PlaybookType.valueOf(step.playbookId()))
+            .toList();
+    return this.selectPlaybooks(plan);
   }
 
   private List<Playbook> selectPlaybooks(List<PlaybookType> types) {
