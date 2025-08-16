@@ -21,8 +21,8 @@ public class ContextStoreService {
   }
 
   public void update(
-      String sessionId, ConversationContext context, String userMessage, String response) {
-    var newContext = new ShortTermContext(userMessage, response);
+      String sessionId, ConversationContext context, String userMessage, String receivedMessage) {
+    var newContext = new ShortTermContext(userMessage, receivedMessage);
     shortTermContextRepository.append(sessionId, newContext);
     rollingSummaryService.update(sessionId, context.rollingSummary(), newContext);
   }
