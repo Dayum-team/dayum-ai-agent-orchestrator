@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RememberDislikedFoodsPlaybook implements Playbook {
+public class RememberTasteAttributePlaybook implements Playbook {
 
   @Override
   public PlaybookCatalog getCatalog() {
