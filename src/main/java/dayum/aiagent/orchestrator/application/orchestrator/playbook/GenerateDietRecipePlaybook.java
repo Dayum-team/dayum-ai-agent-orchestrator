@@ -1,15 +1,15 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook;
 
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SelectionAckPlaybook implements Playbook {
+public class GenerateDietRecipePlaybook implements Playbook {
 
   @Override
   public PlaybookCatalog getCatalog() {
@@ -23,6 +23,6 @@ public class SelectionAckPlaybook implements Playbook {
 
   @Override
   public PlaybookType getType() {
-    return PlaybookType.SELECTION_ACK;
+    return PlaybookType.GENERATE_DIET_RECIPE;
   }
 }

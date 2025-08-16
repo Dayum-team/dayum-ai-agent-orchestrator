@@ -20,4 +20,9 @@ public class RememberTasteAttributePlaybook implements Playbook {
   public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
     return null;
   }
+
+  @Override
+  public PlaybookType getType() {
+    return PlaybookType.REMEMBER_TASTE_ATTRIBUTE;
+  }
 }

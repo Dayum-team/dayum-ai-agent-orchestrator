@@ -20,4 +20,9 @@ public class SmallTalkPlaybook implements Playbook {
   public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
     return null;
   }
+
+  @Override
+  public PlaybookType getType() {
+    return PlaybookType.SMALL_TALK;
+  }
 }

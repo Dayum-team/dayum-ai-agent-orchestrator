@@ -10,4 +10,6 @@ public interface Playbook {
   PlaybookCatalog getCatalog();
 
   PlaybookResult play(ConversationContext context, UserMessage userMessage);
+
+  PlaybookType getType();
 }

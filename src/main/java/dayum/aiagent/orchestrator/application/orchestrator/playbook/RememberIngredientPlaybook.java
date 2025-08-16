@@ -31,4 +31,9 @@ public class RememberIngredientPlaybook implements Playbook {
   public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
     return null;
   }
+
+  @Override
+  public PlaybookType getType() {
+    return PlaybookType.REMEMBER_INGREDIENT;
+  }
 }
