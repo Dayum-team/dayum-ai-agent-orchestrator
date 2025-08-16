@@ -29,7 +29,7 @@ ncp:
   access-key: ${ncp.access-key}
   secret-key: ${ncp.secret-key}
   clova:
-    base-url: ${ncp.clova.base-url}
+    url: https://clovastudio.stream.ntruss.com/v3/chat-completions
     api-key: ${ncp.clova.api-key}
 
 dayum-server:

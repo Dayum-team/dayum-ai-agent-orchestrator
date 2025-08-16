@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("ncp.clova")
 public class ClovaStudioProperties {
 
-  private String baseUrl;
+  private String url;
   private String apiKey;
 
   public static class ModelConfig {

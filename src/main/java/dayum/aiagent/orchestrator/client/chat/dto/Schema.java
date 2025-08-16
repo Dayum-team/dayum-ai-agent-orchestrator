@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ToolSignatureSchema {
-  private ToolSignatureSchema() {}
+public final class Schema {
+  private Schema() {}
 
   public sealed interface JsonSchema
       permits ObjectSchema, ArraySchema, StringSchema, IntegerSchema {}
@@ -181,4 +181,7 @@ public final class ToolSignatureSchema {
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public record ToolSchema(String name, String description, JsonSchema parameters) {}
+
+  public record Function(String type, ToolSchema function) {}
+  public record Json(String type, JsonSchema schema) {}
 }

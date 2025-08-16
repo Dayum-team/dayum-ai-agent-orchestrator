@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 public class RememberIngredientPlaybook implements Playbook {
 
   private static final PlaybookCatalog CATALOG =
-      new PlaybookCatalog(
-          "REMEMBER_INGREDIENT",
-          "사용자의 메시지/이미지 입력에서 재료를 추출해 Pantry 에 멱등성을 보장한 Upsert 를 수행",
-          List.of("재료를 언급(예: '계란, 양배추가 있어')", "재료가 포함된 이미지 업로드", "사용자가 '추가/저장' 의도를 표현"),
-          List.of(ContextType.PANTRY.name()),
-          List.of("중복 재료는 멱등 병합(name 표준화, quantity 누적 규칙 적용)"));
+      PlaybookCatalog.builder()
+          .id(PlaybookType.REMEMBER_INGREDIENT.name())
+          .action("사용자가 보낸 메시지/텍스트/이미지에 포함된 재료를 PANTRY context 에 반영")
+          .outputContext(List.of(ContextType.PANTRY.name()))
+          .trigger(List.of("음식/재료에 대한 메시지", "사용자가 가지고 있는 재료를 알려주는 경우", "음식/재료가 포함된 이미지를 보내는 경우"))
+          .build();
 
   @Override
   public PlaybookCatalog getCatalog() {
