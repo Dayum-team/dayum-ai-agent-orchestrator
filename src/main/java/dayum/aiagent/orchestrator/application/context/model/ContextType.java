@@ -1,5 +1,6 @@
 package dayum.aiagent.orchestrator.application.context.model;
 
 public enum ContextType {
-  PANTRY;
+  PANTRY,
+  DISLIKE_FOOD;
 }
