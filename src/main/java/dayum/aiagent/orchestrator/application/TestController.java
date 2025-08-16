@@ -4,6 +4,7 @@ import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
 import dayum.aiagent.orchestrator.application.context.dto.ShortTermContext;
 import dayum.aiagent.orchestrator.application.conversation.ConversationService;
 import dayum.aiagent.orchestrator.application.tools.RecipeGenerateTool;
+import dayum.aiagent.orchestrator.application.tools.ToolRegistry;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import java.util.List;
@@ -16,17 +17,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @RestController
 @RequiredArgsConstructor
 public class TestController {
 
   private final ConversationService conversationService;
   private final RecipeGenerateTool recipeGenerateTool;
+  private final ToolRegistry toolRegistry;
+  private final ObjectMapper objectMapper;
 
   @PostMapping("/chat/test")
   public String testChat(@RequestBody TestMessage message) {
     return conversationService.chat(
         message.getMemberId(), message.getSession(), message.getUserMessage());
+  }
+
+  @GetMapping("/test/tool-schema")
+  public String toolSchemas() throws JsonProcessingException {
+    return objectMapper.writeValueAsString(toolRegistry.getToolSchemaList());
   }
 
   @GetMapping("/test")

@@ -28,10 +28,12 @@ public class RecipeGenerateTool implements Tool<RecipeGenerateRequest> {
     return ToolSignatureSchema.ObjectSchema.object()
         .property(
             "ingredients",
-            ToolSignatureSchema.ObjectSchema.object()
-                .property("name", ToolSignatureSchema.StringSchema.string().build())
-                .property("quantity", ToolSignatureSchema.StringSchema.string().build())
-                .required("name")
+            ToolSignatureSchema.ArraySchema.array(
+                    ToolSignatureSchema.ObjectSchema.object()
+                        .property("name", ToolSignatureSchema.StringSchema.string().build())
+                        .property("quantity", ToolSignatureSchema.StringSchema.string().build())
+                        .required("name")
+                        .build())
                 .build())
         .build();
   }

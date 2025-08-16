@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ToolRegistry {
 
-  private final List<Tool<ToolRequest>> tools;
+  private final List<Tool<? extends ToolRequest>> tools;
   private final ObjectMapper objectMapper;
 
   public List<ToolSignatureSchema.ToolSchema> getToolSchemaList() {
@@ -29,10 +29,14 @@ public class ToolRegistry {
   public String execute(String toolName, String argumentsJsonString, ConversationContext context) {
     var selectedTool =
         tools.stream().filter(tool -> tool.getName().equals(toolName)).findFirst().get();
+    return this.execute(selectedTool, argumentsJsonString, context);
+  }
 
+  private <T extends ToolRequest> String execute(
+      Tool<T> tool, String argumentsJsonString, ConversationContext context) {
     try {
-      var request = objectMapper.readValue(argumentsJsonString, selectedTool.getRequestType());
-      var response = selectedTool.execute(context, request);
+      T request = objectMapper.readValue(argumentsJsonString, tool.getRequestType());
+      var response = tool.execute(context, request);
       return objectMapper.writeValueAsString(response);
     } catch (Exception e) {
       log.error("Invalid format tool request & response.", e);
