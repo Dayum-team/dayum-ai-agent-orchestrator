@@ -17,7 +17,7 @@ public class RememberIngredientPlaybook implements Playbook {
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
           .id(PlaybookType.REMEMBER_INGREDIENT.name())
-          .action("사용자가 보낸 메시지/텍스트/이미지에 포함된 재료를 PANTRY context 에 반영")
+          .action("사용자가 보낸 메시지/텍스트/이미지에 포함된 재료를 PANTRY context 에 반영하기 위해 활용")
           .outputContext(List.of(ContextType.PANTRY.name()))
           .trigger(List.of("음식/재료에 대한 메시지", "사용자가 가지고 있는 재료를 알려주는 경우", "음식/재료가 포함된 이미지를 보내는 경우"))
           .build();

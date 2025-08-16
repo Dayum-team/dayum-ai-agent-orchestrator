@@ -17,7 +17,7 @@ public class RememberTasteAttributePlaybook implements Playbook {
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
           .id(PlaybookType.REMEMBER_TASTE_ATTRIBUTE.name())
-          .action("사용자의 음식 취향과 선호도를 파악하여 저장하고 향후 추천에 활용")
+          .action("사용자가 언급한 음식 취향과 선호도를 저장하기위해 활용")
           .outputContext(List.of(ContextType.TASTE_ATTRIBUTE.name()))
           .trigger(
               List.of(

@@ -19,11 +19,7 @@ public class RecommendDietRecipePlaybook implements Playbook {
           .id(PlaybookType.RECOMMEND_DIET_RECIPE.name())
           .action("PANTRY 에 포함된 사용자가 보유한 재료와 일치하는 기존 레시피 영상을 검색하여 추천")
           .requiresContext(List.of(ContextType.PANTRY.name()))
-          .trigger(
-              List.of(
-                  "직접 만들어달라는 사용자 요청",
-                  "이미 추천받은 사용자가 또 다른 레시피를 요청",
-                  "매운거 싫어, 단백질 높은것 과 같이 사용자 취향을 고려한 추천 요청"))
+          .trigger(List.of("다이어트 레시피를 추천해달라는 요청", "가지고있는 재료로 만들 수 있는 레시피 추천 요청"))
           .cautions(
               List.of(
                   "반드시 PANTRY 가 USER_CONTEXT_KEY 에 있는경우 선택",
