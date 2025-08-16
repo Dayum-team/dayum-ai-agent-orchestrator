@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dayum.aiagent.orchestrator.client.chat.clova.ClovaStudioProperties;
 import dayum.aiagent.orchestrator.client.chat.dto.Schema;
 import java.util.List;
-
 import lombok.Builder;
 
 @Builder
@@ -72,14 +71,11 @@ public record ClovaChatCompletionRequest(
                 new Message("user", List.of(new TextContent("text", userMessage)))))
         .tools(tools.stream().map(tool -> new Schema.Function("function", tool)).toList())
         .toolChoice("auto")
-        // .topP(ClovaStudioProperties.ModelConfig.TOP_P)
-        // .topK(ClovaStudioProperties.ModelConfig.TOP_K)
-        // .maxTokens(ClovaStudioProperties.ModelConfig.MAX_TOKENS)
-        // .temperature(ClovaStudioProperties.ModelConfig.TEMPERATURE)
-        // .repetitionPenalty(ClovaStudioProperties.ModelConfig.REPETITION_PENALTY)
-        // .stop(List.of())
-        // .seed(ClovaStudioProperties.ModelConfig.SEED)
-        // .includeAiFilters(ClovaStudioProperties.ModelConfig.INCLUDE_AI_FILTERS)
+        .thinking(new Thinking("none"))
+        .topP(1.0)
+        .temperature(0.0)
+        .repetitionPenalty(ClovaStudioProperties.ModelConfig.REPETITION_PENALTY)
+        .stop(List.of())
         .build();
   }
 

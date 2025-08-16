@@ -1,7 +1,5 @@
 package dayum.aiagent.orchestrator.client.chat.clova;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
@@ -110,11 +108,6 @@ public class ClovaStudioChatClient implements ChatClient {
 
   private ClovaChatCompletionResponse sendRequest(
       ClovaChatCompletionRequest request, ModelType modelType) {
-    try {
-      System.out.println(new ObjectMapper().writeValueAsString(request));
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
     return Try.ofCallable(
             () ->
                 restClient
@@ -125,7 +118,7 @@ public class ClovaStudioChatClient implements ChatClient {
                     .body(request)
                     .retrieve()
                     .body(ClovaChatCompletionResponse.class))
-        .getOrElseThrow((ex) -> new RuntimeException(ex));
+        .getOrElseThrow(ex -> new RuntimeException(ex));
   }
 
   private ChatCompletionResponse convert(ClovaChatCompletionResponse response) {
