@@ -1,7 +1,10 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
+
+import java.util.List;
+
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.TurnResponse;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResponse;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class Orchestrator {
 
-  private final IntentRouter intentRouter;
+  private final Planner planner;
 
-  public TurnResponse runTurn(ConversationContext context, UserMessage userMessage) {
+  public List<PlaybookResponse> runTurn(ConversationContext context, UserMessage userMessage) {
     return null;
   }
 }

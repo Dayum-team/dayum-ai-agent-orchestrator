@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class IntentRouter {
+public class Planner {
 
   private final List<Playbook> playbooks;
   private final ChatClientService chatClientService;
 
-  public List<Playbook> route(ConversationContext context, UserMessage userMessage) {
+  public List<Playbook> planning(ConversationContext context, UserMessage userMessage) {
     // 1. userMessage.selectQuickRely 를 기반으로 Routing
     // 2. CLOVA Studio 를 이용한 Routing
     return null;
