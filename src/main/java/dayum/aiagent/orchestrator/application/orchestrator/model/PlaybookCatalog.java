@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.model;
+package dayum.aiagent.orchestrator.application.orchestrator.model;
 
 import java.util.List;
 

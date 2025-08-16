@@ -3,7 +3,7 @@ package dayum.aiagent.orchestrator.application.conversation;
 import dayum.aiagent.orchestrator.application.context.ContextStoreService;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.Orchestrator;
-import dayum.aiagent.orchestrator.application.orchestrator.dto.TurnResponse;
+import dayum.aiagent.orchestrator.application.orchestrator.model.TurnResponse;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

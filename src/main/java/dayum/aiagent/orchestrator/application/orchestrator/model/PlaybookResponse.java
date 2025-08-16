@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.dto;
+package dayum.aiagent.orchestrator.application.orchestrator.model;
 
 import dayum.aiagent.orchestrator.common.enums.QuickReply;
 import java.util.List;
