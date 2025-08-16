@@ -1,5 +1,8 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook;
 
+import java.util.List;
+
+import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
@@ -11,9 +14,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RecommendDietRecipePlaybook implements Playbook {
 
+  private static final PlaybookCatalog CATALOG =
+      new PlaybookCatalog(
+          "RECOMMEND_DIET_RECIPE",
+          "사용자가 보유한 재료와 일치하는 기존 레시피 영상을 검색하여 추천",
+          List.of(
+              "보유 재료로 레시피 검색 요청 (이 재료들로 뭐 만들 수 있어?)",
+              "특정 재료 언급 후 추천 요청 (닭가슴살 있는데 추천해줘)",
+              "재료 사진 업로드 후 레시피 요청"),
+          List.of(ContextType.PANTRY.name()),
+          List.of("재료 매칭률이 높은 순으로 정렬", "레시피 영상이 있는 것만 추천", "재료가 부족해도 대체 가능한 레시피 포함"));
+
   @Override
   public PlaybookCatalog getCatalog() {
-    return null;
+    return CATALOG;
   }
 
   @Override
