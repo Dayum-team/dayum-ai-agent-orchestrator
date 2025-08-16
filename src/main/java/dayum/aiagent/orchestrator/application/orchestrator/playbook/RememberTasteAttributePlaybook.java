@@ -1,5 +1,8 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook;
 
+import java.util.List;
+
+import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
@@ -11,9 +14,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RememberTasteAttributePlaybook implements Playbook {
 
+  private static final PlaybookCatalog CATALOG =
+      new PlaybookCatalog(
+          "REMEMBER_TASTE_ATTRIBUTE",
+          "사용자의 음식 취향과 선호도를 파악하여 저장하고 향후 추천에 활용",
+          List.of(
+              "음식 선호 표현 (매운 음식 좋아해, 단 거 싫어해)",
+              "특정 재료 선호/비선호 (브로콜리는 못 먹어, 치즈 좋아해)",
+              "요리 스타일 선호 (한식이 좋아, 볶음요리 선호해)",
+              "식감 선호 표현 (바삭한 거 좋아해, 물컹한 건 싫어)",
+              "알러지나 불내증 언급 (유당불내증 있어, 견과류 알러지)"),
+          List.of(ContextType.TASTE_ATTRIBUTE.name()),
+          List.of("긍정/부정 취향 구분하여 저장", "알러지는 별도로 중요도 높게 관리", "상충되는 취향 입력 시 최신 정보로 업데이트"));
+
   @Override
   public PlaybookCatalog getCatalog() {
-    return null;
+    return CATALOG;
   }
 
   @Override
