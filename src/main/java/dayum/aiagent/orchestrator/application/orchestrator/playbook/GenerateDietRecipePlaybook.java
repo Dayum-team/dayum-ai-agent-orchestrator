@@ -30,6 +30,7 @@ public class GenerateDietRecipePlaybook implements Playbook {
                   "매운거 싫어, 단백질 높은것 과 같이 사용자 취향을 고려한 추천 요청"))
           .cautions(
               List.of(
+                  "반드시 PANTRY 가 USER_CONTEXT_KEY 에 있는경우 선택",
                   "처음 추천해달라는 요청에서 사용 금지",
                   "생성된 레시피는 영양정보 필수 포함",
                   "알러지나 식이제한 사항 반드시 체크",

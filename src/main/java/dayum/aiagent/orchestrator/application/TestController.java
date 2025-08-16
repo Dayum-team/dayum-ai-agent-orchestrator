@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.Planner;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookPlanResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.application.tools.ToolRegistry;
@@ -30,15 +31,10 @@ public class TestController {
   private final Planner planner;
 
   @PostMapping("/test/plan")
-  public List<Pair<PlaybookType, String>> planning(@RequestBody TestMessage message) {
-    return planner
-        .planning(
-            new ConversationContext(
-                message.memberId, message.getSession(), Map.of(), List.of(), ""),
-            message.userMessage)
-        .stream()
-        .map(p -> Pair.of(p.getFirst().getType(), p.getSecond()))
-        .toList();
+  public List<PlaybookPlanResult> planning(@RequestBody TestMessage message) {
+    return planner.planning(
+        new ConversationContext(message.memberId, message.getSession(), Map.of(), List.of(), ""),
+        message.userMessage);
   }
 
   @GetMapping("/test/tool-schema")
