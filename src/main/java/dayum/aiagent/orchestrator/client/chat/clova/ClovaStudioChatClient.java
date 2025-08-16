@@ -28,8 +28,15 @@ public class ClovaStudioChatClient implements ChatClient {
   private final RestClient restClient;
 
   public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage) {
-    // TODO: Not Implemented
-    return null;
+    try {
+      var request = ClovaChatCompletionRequest.of(systemMessage, userMessage);
+      var response = this.sendRequest(request);
+      log.info("Chat completion request : {}", request);
+      log.info("Chat completion response : {}", response);
+      return this.convert(response);
+    } catch (Exception e) {
+      throw new RuntimeException();
+    }
   }
 
   public ChatCompletionResponse chatCompletion(
@@ -45,8 +52,7 @@ public class ClovaStudioChatClient implements ChatClient {
                       this.put("shortTermContext", context.shortTermContexts());
                     }
                   });
-      var request =
-          ClovaChatCompletionRequest.of(systemMessage, contextMessage + userMessage);
+      var request = ClovaChatCompletionRequest.of(systemMessage, contextMessage + userMessage);
       var response = this.sendRequest(request);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);

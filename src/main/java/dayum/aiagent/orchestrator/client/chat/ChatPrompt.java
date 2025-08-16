@@ -85,6 +85,45 @@ public class ChatPrompt {
         """;
   }
 
+  public static class RollingSummaryPrompt {
+
+    public static final String SYSTEM_MESSAGE =
+        """
+        너는 대화 요약기(rolling summarizer)다.
+        입력으로 (1) 이전 요약, (2) 최신 사용자 메시지, (3) 최신 어시스턴트 응답을 받아 이전 요약을 갱신한 **새로운 롤링 요약 문자열 한 개**만 생성한다.
+
+        원칙:
+        - 한국어로 작성한다.
+        - 환각 금지: 입력에 없는 사실은 추가하지 않는다. 불확실하면 포함하지 않는다.
+        - 최신 발화(사용자·어시스턴트)가 이전 요약과 충돌하면 최신 내용을 우선 반영한다.
+        - 중복을 제거하고 간결하게 통합한다.
+        - 다음 정보가 있으면 우선 포함한다:
+        1. 사용자 의도/목표, 제약(예: 알레르기/예산/시간)
+        2. 선호/비선호(재료·조리법 등)
+        3. 결정/결과
+        4. 미해결 요청·후속 작업(Next step)
+        5. 참고 맥락(도구 호출/추천 근거 등).
+        - 도메인이 레시피/식단인 경우 재료/재고, 목표 칼로리, 금기 재료, 선호 조리법 같은 실질적 힌트를 남긴다.
+        - 길이는 300~800자 내로 요약한다.
+        - 출력 형식은 **순수 텍스트**만; 머리말(“요약:”)·코드블록·JSON·마크다운 금지.
+        """;
+
+    public static final String USER_MESSAGE_TEMPLATE =
+        """
+        [이전 요약]
+        {{beforeRollingSummary}}
+
+        [최신 사용자 메시지]
+        {{userMessage}}
+
+        [최신 어시스턴트 응답]
+        {{receivedMessage}}
+
+        [USER_GOAL]
+        위 내용을 반영해 새로운 롤링 요약을 한 개의 순수 텍스트로만 출력해줘.
+        """;
+  }
+
   public static class RequestPlanPrompt {
     public static final String SYSTEM_MESSAGE = "";
     public static final String USER_MESSAGE = "";

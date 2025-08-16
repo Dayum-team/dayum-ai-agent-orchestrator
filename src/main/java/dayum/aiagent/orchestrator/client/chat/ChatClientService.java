@@ -25,13 +25,35 @@ public class ChatClientService {
   private final ChatClient chatClient;
   private final ObjectMapper objectMapper;
 
-  public String summary(String beforeRollingSummary, String userMessage, String response) {
-    return "";
+  public String summary(String beforeRollingSummary, String userMessage, String receivedMessage) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.RollingSummaryPrompt.USER_MESSAGE_TEMPLATE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("beforeRollingSummary", beforeRollingSummary);
+                      this.put("userMessage", userMessage);
+                      this.put("receivedMessage", receivedMessage);
+                    }
+                  });
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(
+              ChatPrompt.RollingSummaryPrompt.SYSTEM_MESSAGE, userMessagePrompt);
+      if ("stop".equals(response.finishReason())) {
+        return response.message();
+      }
+      throw new RuntimeException("Invalid finish reason.");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      return beforeRollingSummary;
+    }
   }
 
   public String generateDietRecipes(ConversationContext context, List<Ingredient> ingredients) {
     try {
-      String userMessage =
+      String userMessagePrompt =
           handlebars
               .compileInline(ChatPrompt.GenerateRecipesPrompt.USER_MESSAGE_TEMPLATE)
               .apply(
@@ -45,7 +67,7 @@ public class ChatClientService {
                   });
       ChatCompletionResponse response =
           chatClient.chatCompletion(
-              ChatPrompt.GenerateRecipesPrompt.SYSTEM_MESSAGE, userMessage, context);
+              ChatPrompt.GenerateRecipesPrompt.SYSTEM_MESSAGE, userMessagePrompt, context);
       if ("stop".equals(response.finishReason())) {
         return response.message();
       }
