@@ -6,6 +6,7 @@ import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.LoopContext;
 import dayum.aiagent.orchestrator.application.orchestrator.Plan;
 import dayum.aiagent.orchestrator.application.tools.model.vo.Ingredient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import java.util.HashMap;
 import java.util.List;

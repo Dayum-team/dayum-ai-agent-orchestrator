@@ -5,7 +5,7 @@ import dayum.aiagent.orchestrator.application.context.dto.ShortTermContext;
 import dayum.aiagent.orchestrator.application.conversation.ConversationService;
 import dayum.aiagent.orchestrator.application.tools.RecipeGenerateTool;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
-import dayum.aiagent.orchestrator.application.tools.model.vo.Ingredient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;

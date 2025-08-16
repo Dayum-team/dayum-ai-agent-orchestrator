@@ -1,17 +1,21 @@
 package dayum.aiagent.orchestrator.application.tools;
 
 import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.application.tools.model.request.RecipeContentsRecommendRequest;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
 import dayum.aiagent.orchestrator.application.tools.model.response.RecipeContentsRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import dayum.aiagent.orchestrator.client.dayum.DayumApiClient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> {
+public class RecipeContentsRecommendTool implements Tool<RecipeContentsRecommendRequest> {
 
+  private static final int RECOMMEND_MAX_COUNT = 5;
   private final DayumApiClient dayumApiClient;
 
   @Override
@@ -38,14 +42,30 @@ public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> 
   }
 
   @Override
-  public Class<RecipeGenerateRequest> getRequestType() {
-    return RecipeGenerateRequest.class;
+  public Class<RecipeContentsRecommendRequest> getRequestType() {
+    return RecipeContentsRecommendRequest.class;
   }
 
   @Override
-  public RecipeContentsRecommendResponse execute(
-      ConversationContext context, RecipeGenerateRequest request) {
-    // TODO: Not Implemented
-    return null;
+  public List<RecipeContentsRecommendResponse> execute(
+      ConversationContext context, RecipeContentsRecommendRequest request) {
+    return dayumApiClient.recommendContentsBy(request.ingredients(), RECOMMEND_MAX_COUNT).stream()
+        .map(
+            contents ->
+                new RecipeContentsRecommendResponse(
+                    contents.thumbnailUrl(),
+                    contents.url(),
+                    contents.ingredients().stream()
+                        .map(
+                            ingredient ->
+                                new Ingredient(
+                                    ingredient.name(),
+                                    ingredient.quantity() + " x " + ingredient.standardQuantity()))
+                        .toList(),
+                    contents.calories(),
+                    contents.carbohydrates(),
+                    contents.proteins(),
+                    contents.fats()))
+        .toList();
   }
 }
