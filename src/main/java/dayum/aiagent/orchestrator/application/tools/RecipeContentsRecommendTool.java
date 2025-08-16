@@ -1,6 +1,7 @@
 package dayum.aiagent.orchestrator.application.tools;
 
 import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.application.tools.model.request.RecipeContentsRecommendRequest;
 import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
 import dayum.aiagent.orchestrator.application.tools.model.response.RecipeContentsRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> {
+public class RecipeContentsRecommendTool implements Tool<RecipeContentsRecommendRequest> {
 
   private static final int RECOMMEND_MAX_COUNT = 5;
   private final DayumApiClient dayumApiClient;
@@ -41,13 +42,13 @@ public class RecipeContentsRecommendTool implements Tool<RecipeGenerateRequest> 
   }
 
   @Override
-  public Class<RecipeGenerateRequest> getRequestType() {
-    return RecipeGenerateRequest.class;
+  public Class<RecipeContentsRecommendRequest> getRequestType() {
+    return RecipeContentsRecommendRequest.class;
   }
 
   @Override
   public List<RecipeContentsRecommendResponse> execute(
-      ConversationContext context, RecipeGenerateRequest request) {
+      ConversationContext context, RecipeContentsRecommendRequest request) {
     return dayumApiClient.recommendContentsBy(request.ingredients(), RECOMMEND_MAX_COUNT).stream()
         .map(
             contents ->
