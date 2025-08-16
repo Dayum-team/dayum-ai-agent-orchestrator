@@ -9,7 +9,6 @@ import dayum.aiagent.orchestrator.application.context.port.ShortTermContextRepos
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import java.util.List;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,8 @@ public class ContextStoreService {
     Map<ContextType, ContextValue> contexts = domainContextRepository.fetchBy(sessionId);
     List<ShortTermContext> shortTermContexts = shortTermContextRepository.fetchBy(sessionId);
     String rollingSummary = rollingSummaryService.fetchBy(sessionId);
-    return new ConversationContext(memberId, sessionId, contexts, shortTermContexts, rollingSummary);
+    return new ConversationContext(
+        memberId, sessionId, contexts, shortTermContexts, rollingSummary);
   }
 
   public void update(

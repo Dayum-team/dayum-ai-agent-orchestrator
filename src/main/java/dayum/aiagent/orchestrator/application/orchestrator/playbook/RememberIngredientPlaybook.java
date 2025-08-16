@@ -1,6 +1,7 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
+import dayum.aiagent.orchestrator.application.orchestrator.dto.PlaybookResponse;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.model.PlaybookCatalog;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,10 @@ public class RememberIngredientPlaybook implements Playbook {
   @Override
   public PlaybookCatalog getCatalog() {
     return CATALOG;
+  }
+
+  @Override
+  public PlaybookResponse play() {
+    return null;
   }
 }
