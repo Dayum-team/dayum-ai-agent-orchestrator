@@ -18,3 +18,4 @@ public interface ChatClient {
       String context,
       List<ToolSignatureSchema.ToolSchema> toolSchemas);
 }
+
