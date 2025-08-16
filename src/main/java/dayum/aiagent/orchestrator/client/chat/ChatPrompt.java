@@ -84,4 +84,9 @@ public class ChatPrompt {
         JSON 이외의 텍스트/설명은 절대 포함하지 말 것.
         """;
   }
+
+  public static class RequestPlanPrompt {
+    public static final String SYSTEM_MESSAGE = "";
+    public static final String USER_MESSAGE = "";
+  }
 }
