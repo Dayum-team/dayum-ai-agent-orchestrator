@@ -1,7 +1,9 @@
-package dayum.aiagent.orchestrator.application.tools;
+package dayum.aiagent.orchestrator.application.tools.dietrecipe;
 
-import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
-import dayum.aiagent.orchestrator.application.tools.model.request.RecipeGenerateRequest;
+import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.tools.Tool;
+import dayum.aiagent.orchestrator.application.tools.ToolType;
+import dayum.aiagent.orchestrator.application.tools.dietrecipe.model.GenerateDietRecipesRequest;
 import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import lombok.RequiredArgsConstructor;
@@ -9,18 +11,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecipeGenerateTool implements Tool<RecipeGenerateRequest> {
+public class GenerateDietRecipesTool implements Tool<GenerateDietRecipesRequest> {
 
   private final ChatClientService chatClientService;
 
   @Override
-  public String getName() {
-    return "generate_diet_recipes_with_ingredients_user_have";
-  }
-
-  @Override
-  public String getDescription() {
-    return "사용자가 가지고있는 재료를 가지고 다이어트 레시피를 만들어주는 도구";
+  public ToolType getType() {
+    return ToolType.GENERATE_DIET_RECIPE;
   }
 
   @Override
@@ -39,12 +36,12 @@ public class RecipeGenerateTool implements Tool<RecipeGenerateRequest> {
   }
 
   @Override
-  public Class<RecipeGenerateRequest> getRequestType() {
-    return RecipeGenerateRequest.class;
+  public Class<GenerateDietRecipesRequest> getRequestType() {
+    return GenerateDietRecipesRequest.class;
   }
 
   @Override
-  public String execute(ConversationContext context, RecipeGenerateRequest request) {
+  public String execute(ConversationContext context, GenerateDietRecipesRequest request) {
     return chatClientService.generateDietRecipes(context, request.ingredients());
   }
 }
