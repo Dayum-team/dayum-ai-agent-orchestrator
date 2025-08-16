@@ -1,7 +1,7 @@
 package dayum.aiagent.orchestrator.client.chat.clova;
 
 import com.github.jknack.handlebars.Handlebars;
-import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
 import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionRequest;

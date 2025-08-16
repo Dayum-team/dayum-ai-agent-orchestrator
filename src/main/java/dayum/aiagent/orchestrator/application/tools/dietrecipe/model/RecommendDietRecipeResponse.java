@@ -1,9 +1,9 @@
-package dayum.aiagent.orchestrator.application.tools.model.response;
+package dayum.aiagent.orchestrator.application.tools.dietrecipe.model;
 
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import java.util.List;
 
-public record RecipeContentsRecommendResponse(
+public record RecommendDietRecipeResponse(
     String thumbnailUrl,
     String url,
     List<Ingredient> ingredients,

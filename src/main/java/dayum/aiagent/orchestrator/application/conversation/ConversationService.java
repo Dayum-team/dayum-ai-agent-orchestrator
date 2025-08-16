@@ -1,8 +1,9 @@
 package dayum.aiagent.orchestrator.application.conversation;
 
 import dayum.aiagent.orchestrator.application.context.ContextStoreService;
-import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.Orchestrator;
+import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public class ConversationService {
   private final Orchestrator orchestrator;
   private final ContextStoreService contextStoreService;
 
-  public String chat(long memberId, String sessionId, String userMessage) {
+  public String chat(long memberId, String sessionId, UserMessage userMessage) {
     ConversationContext context = contextStoreService.fetchBeforeContext(memberId, sessionId);
     String result = orchestrator.runTurn(context, userMessage);
     contextStoreService.update(sessionId, context, userMessage, result);

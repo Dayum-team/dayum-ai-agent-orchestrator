@@ -1,6 +1,6 @@
 package dayum.aiagent.orchestrator.client.chat;
 
-import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
 import java.util.List;

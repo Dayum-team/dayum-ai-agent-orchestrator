@@ -1,6 +1,6 @@
 package dayum.aiagent.orchestrator.infrastructor.repository;
 
-import dayum.aiagent.orchestrator.application.context.dto.ShortTermContext;
+import dayum.aiagent.orchestrator.application.context.model.ShortTermContext;
 import dayum.aiagent.orchestrator.application.context.port.ShortTermContextRepository;
 import java.util.Deque;
 import java.util.List;
