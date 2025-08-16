@@ -36,8 +36,8 @@ public class ToolRegistry {
       Tool<T> tool, String argumentsJsonString, ConversationContext context) {
     try {
       T request = objectMapper.readValue(argumentsJsonString, tool.getRequestType());
-      var res = tool.execute(context, request);
-      return objectMapper.writeValueAsString(res);
+      var response = tool.execute(context, request);
+      return objectMapper.writeValueAsString(response);
     } catch (Exception e) {
       log.error("Invalid format tool request & response.", e);
       return "";
