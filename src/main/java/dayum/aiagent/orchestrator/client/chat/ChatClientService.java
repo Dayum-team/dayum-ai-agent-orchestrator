@@ -3,7 +3,7 @@ package dayum.aiagent.orchestrator.client.chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import dayum.aiagent.orchestrator.application.context.dto.ConversationContext;
-import dayum.aiagent.orchestrator.application.tools.model.vo.Ingredient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import java.util.HashMap;
 import java.util.List;
