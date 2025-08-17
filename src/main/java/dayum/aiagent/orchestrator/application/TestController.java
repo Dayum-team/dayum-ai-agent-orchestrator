@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.context.model.PantryContext;
+import dayum.aiagent.orchestrator.application.conversation.ConversationService;
 import dayum.aiagent.orchestrator.application.orchestrator.PlaybookPlanner;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookPlanResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
@@ -33,6 +34,12 @@ public class TestController {
   private final ObjectMapper objectMapper;
   private final PlaybookPlanner planner;
   private final GuardrailPlaybook playbook;
+  private final ConversationService conversationService;
+
+  @PostMapping("/test/chat")
+  public List<PlaybookResult> chat(@RequestBody TestMessage message) {
+    return conversationService.chat(message.memberId, message.session, message.userMessage);
+  }
 
   @PostMapping("/test/plan")
   public List<PlaybookPlanResult> planning(@RequestBody TestMessage message) {
