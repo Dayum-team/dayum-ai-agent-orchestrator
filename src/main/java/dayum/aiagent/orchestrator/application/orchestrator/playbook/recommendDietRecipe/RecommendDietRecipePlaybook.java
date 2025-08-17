@@ -5,11 +5,18 @@ import dayum.aiagent.orchestrator.application.orchestrator.model.*;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.*;
 import dayum.aiagent.orchestrator.application.tools.*;
 import dayum.aiagent.orchestrator.client.dayum.DayumApiClient;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ public class RecommendDietRecipePlaybook implements Playbook {
 
   private final DayumApiClient dayumApiClient;
   private final RecommendDietRecipeResponseBuilder responseBuilder;
+  private final ObjectMapper objectMapper;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -50,5 +58,10 @@ public class RecommendDietRecipePlaybook implements Playbook {
   @Override
   public PlaybookType getType() {
     return PlaybookType.RECOMMEND_DIET_RECIPE;
+  }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of(ContextType.PANTRY);
   }
 }

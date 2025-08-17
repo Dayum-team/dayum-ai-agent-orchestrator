@@ -18,6 +18,5 @@ public enum ToolType {
   GENERATE_SMALL_TALK("", "");
 
   private final String name;
-
   private final String description;
 }

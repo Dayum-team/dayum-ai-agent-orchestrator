@@ -69,6 +69,11 @@ public class RememberIngredientPlaybook implements Playbook {
     return PlaybookType.REMEMBER_INGREDIENT;
   }
 
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
+
   private List<Ingredient> extractIngredientsFromImage(
       ConversationContext context, String imageUrl) {
     try {

@@ -1,5 +1,6 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.common;
 
+import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
@@ -54,5 +55,10 @@ public class SmallTalkPlaybook implements Playbook {
   @Override
   public PlaybookType getType() {
     return PlaybookType.SMALL_TALK;
+  }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
   }
 }
