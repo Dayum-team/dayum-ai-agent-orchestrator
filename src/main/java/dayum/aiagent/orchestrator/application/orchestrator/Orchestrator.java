@@ -31,7 +31,7 @@ public class Orchestrator {
       }
 
       // 2. Playbook 실행
-      PlaybookResult result = plan.playbook().play(context, userMessage);
+      PlaybookResult result = plan.playbook().play(plan.reason(), context, userMessage);
       results.add(result);
 
       // 3. 결과의 output을 원본 context에 병합

@@ -54,7 +54,7 @@ public class GenerateDietRecipePlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     PantryContext pantryContext = (PantryContext) context.contexts().get(ContextType.PANTRY);
     try {
       var response = chatClientService.generateDietRecipes(context, pantryContext.ingredients());

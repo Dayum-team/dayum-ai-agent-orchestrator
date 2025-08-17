@@ -1,14 +1,13 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.select;
 
-import java.util.List;
-
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +34,7 @@ public class SelectionAckPlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     return null;
   }
 

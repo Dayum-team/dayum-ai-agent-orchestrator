@@ -39,7 +39,7 @@ public class RecommendDietRecipePlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     PantryContext pantryContext = (PantryContext) context.contexts().get(ContextType.PANTRY);
     // TODO: Pantry 없을때 throws?
     var response = dayumApiClient.recommendContentsBy(pantryContext.ingredients(), 5);
