@@ -7,6 +7,8 @@ import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
+import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SmallTalkPlaybook implements Playbook {
+
+  private final ChatClientService chatClientService;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -41,8 +45,15 @@ public class SmallTalkPlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
-    return null;
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
+    String response =
+        chatClientService.generateResponseMessage(
+            reason,
+            context,
+            userMessage,
+            ChatPrompt.SmallTalkPrompt.SYSTEM_MESSAGE,
+            ChatPrompt.SmallTalkPrompt.USER_MESSAGE_TEMPLATE);
+    return new PlaybookResult(response);
   }
 
   @Override

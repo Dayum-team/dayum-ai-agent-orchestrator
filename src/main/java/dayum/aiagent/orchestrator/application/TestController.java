@@ -8,6 +8,8 @@ import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.PlaybookPlanner;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookPlanResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.common.GuardrailPlaybook;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.common.SmallTalkPlaybook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe.GenerateDietRecipePlaybook;
 import dayum.aiagent.orchestrator.application.tools.ToolRegistry;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
@@ -30,7 +32,7 @@ public class TestController {
   private final ToolRegistry toolRegistry;
   private final ObjectMapper objectMapper;
   private final PlaybookPlanner planner;
-  private final GenerateDietRecipePlaybook playbook;
+  private final GuardrailPlaybook playbook;
 
   @PostMapping("/test/plan")
   public List<PlaybookPlanResult> planning(@RequestBody TestMessage message) {
@@ -55,6 +57,7 @@ public class TestController {
   @PostMapping("/test/generate")
   public PlaybookResult generate(@RequestBody TestMessage message) {
     return playbook.play(
+        "",
         new ConversationContext(
             message.memberId,
             message.getSession(),

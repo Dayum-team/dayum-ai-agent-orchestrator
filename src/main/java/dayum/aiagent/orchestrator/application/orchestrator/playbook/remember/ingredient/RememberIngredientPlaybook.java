@@ -42,7 +42,7 @@ public class RememberIngredientPlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     List<Ingredient> extractedIngredients;
 
     // 이미지 URL이 있는 경우

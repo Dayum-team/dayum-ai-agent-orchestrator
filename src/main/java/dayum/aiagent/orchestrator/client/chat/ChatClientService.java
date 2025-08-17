@@ -119,4 +119,30 @@ public class ChatClientService {
       throw new RuntimeException("Invalid finish reason.");
     }
   }
+
+  public String generateResponseMessage(
+      String reason,
+      ConversationContext context,
+      UserMessage userMessage,
+      String systemMessage,
+      String userMessageTemplate) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(userMessageTemplate)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("reason", reason);
+                      this.put("userMessage", userMessage.getMessage());
+                    }
+                  });
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(systemMessage, userMessagePrompt, context, ModelType.HCX_005);
+      return response.message();
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Invalid finish reason.");
+    }
+  }
 }
