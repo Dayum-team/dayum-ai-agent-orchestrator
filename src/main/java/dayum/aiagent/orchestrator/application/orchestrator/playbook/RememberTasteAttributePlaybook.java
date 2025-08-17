@@ -43,4 +43,9 @@ public class RememberTasteAttributePlaybook implements Playbook {
   public PlaybookType getType() {
     return PlaybookType.REMEMBER_TASTE_ATTRIBUTE;
   }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
 }

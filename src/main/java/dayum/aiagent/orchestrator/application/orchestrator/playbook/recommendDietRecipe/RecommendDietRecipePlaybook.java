@@ -70,6 +70,11 @@ public class RecommendDietRecipePlaybook implements Playbook {
     return PlaybookType.RECOMMEND_DIET_RECIPE;
   }
 
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of(ContextType.PANTRY);
+  }
+
   private String createToolRequest(List<Ingredient> ingredients) {
     try {
       Map<String, Object> requestMap = new HashMap<>();

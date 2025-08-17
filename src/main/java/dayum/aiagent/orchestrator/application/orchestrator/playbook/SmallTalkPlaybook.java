@@ -48,4 +48,9 @@ public class SmallTalkPlaybook implements Playbook {
   public PlaybookType getType() {
     return PlaybookType.SMALL_TALK;
   }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
 }

@@ -52,4 +52,9 @@ public class GuardrailPlaybook implements Playbook {
   public PlaybookType getType() {
     return PlaybookType.GUARDRAIL;
   }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
 }

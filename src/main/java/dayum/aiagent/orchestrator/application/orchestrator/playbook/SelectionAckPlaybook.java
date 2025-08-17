@@ -41,4 +41,9 @@ public class SelectionAckPlaybook implements Playbook {
   public PlaybookType getType() {
     return PlaybookType.SELECTION_ACK;
   }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
 }

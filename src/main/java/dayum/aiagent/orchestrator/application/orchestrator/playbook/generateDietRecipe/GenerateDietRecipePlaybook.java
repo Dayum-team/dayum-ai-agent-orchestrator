@@ -93,6 +93,11 @@ public class GenerateDietRecipePlaybook implements Playbook {
     return PlaybookType.GENERATE_DIET_RECIPE;
   }
 
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of(ContextType.PANTRY);
+  }
+
   private List<Ingredient> getIngredientsFromPantry(ConversationContext context) {
     List<Ingredient> ingredients = new ArrayList<>();
     ContextValue contextValue = context.contexts().get(ContextType.PANTRY);
