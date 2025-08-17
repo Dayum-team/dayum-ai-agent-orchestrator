@@ -1,17 +1,14 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ContextValue;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookPlanResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class Orchestrator {
 
-  private final Planner planner;
+  private final PlaybookPlanner planner;
 
   public List<PlaybookResult> runTurn(ConversationContext context, UserMessage userMessage) {
     List<PlaybookPlanResult> plans = planner.planning(context, userMessage);

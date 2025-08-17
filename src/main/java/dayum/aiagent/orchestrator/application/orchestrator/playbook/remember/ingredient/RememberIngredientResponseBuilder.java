@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.RememberIngredient;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.remember.ingredient;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.PantryContext;

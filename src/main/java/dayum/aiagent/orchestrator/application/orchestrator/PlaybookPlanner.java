@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class Planner {
+public class PlaybookPlanner {
 
   private final List<Playbook> playbooks;
   private final ChatClientService chatClientService;

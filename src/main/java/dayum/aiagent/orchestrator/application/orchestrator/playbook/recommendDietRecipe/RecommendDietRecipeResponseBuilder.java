@@ -2,22 +2,21 @@ package dayum.aiagent.orchestrator.application.orchestrator.playbook.recommendDi
 
 import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
-import dayum.aiagent.orchestrator.application.tools.dietrecipe.model.RecommendDietRecipeResponse;
+import dayum.aiagent.orchestrator.client.dayum.dto.RecommendContentsResponse;
 import dayum.aiagent.orchestrator.common.enums.QuickReply;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class RecommendDietRecipeResponseBuilder {
 
   public PlaybookResult buildResponse(
-      List<RecommendDietRecipeResponse> recipes, PantryContext pantryContext) {
+      List<RecommendContentsResponse> recipes, PantryContext pantryContext) {
     if (recipes.isEmpty()) {
       return createNoResultResponse(pantryContext);
     } else if (recipes.size() == 1) {
@@ -52,7 +51,7 @@ public class RecommendDietRecipeResponseBuilder {
   }
 
   private PlaybookResult createSingleResultResponse(
-      RecommendDietRecipeResponse recipe, PantryContext pantryContext) {
+      RecommendContentsResponse recipe, PantryContext pantryContext) {
 
     String usedIngredients = formatIngredients(pantryContext.ingredients(), 3);
     StringBuilder message = new StringBuilder();
@@ -72,14 +71,14 @@ public class RecommendDietRecipeResponseBuilder {
         Map.of());
   }
 
-  private PlaybookResult createMultipleResultsResponse(List<RecommendDietRecipeResponse> recipes) {
+  private PlaybookResult createMultipleResultsResponse(List<RecommendContentsResponse> recipes) {
     StringBuilder message = new StringBuilder();
     message.append("찾은 레시피들이에요! 어떤 걸 만들어볼까요?\n\n");
 
     int displayCount = Math.min(recipes.size(), 5);
 
     for (int i = 0; i < displayCount; i++) {
-      RecommendDietRecipeResponse recipe = recipes.get(i);
+      RecommendContentsResponse recipe = recipes.get(i);
 
       if (recipe.thumbnailUrl() != null && !recipe.thumbnailUrl().isEmpty()) {
         message.append(String.format("![레시피 %d](%s)\n", i + 1, recipe.thumbnailUrl()));
@@ -103,13 +102,13 @@ public class RecommendDietRecipeResponseBuilder {
         .collect(Collectors.joining(", "));
   }
 
-  private void appendThumbnail(StringBuilder message, RecommendDietRecipeResponse recipe) {
+  private void appendThumbnail(StringBuilder message, RecommendContentsResponse recipe) {
     if (recipe.thumbnailUrl() != null && !recipe.thumbnailUrl().isEmpty()) {
       message.append(String.format("![레시피 이미지](%s)\n\n", recipe.thumbnailUrl()));
     }
   }
 
-  private void appendNutritionInfo(StringBuilder message, RecommendDietRecipeResponse recipe) {
+  private void appendNutritionInfo(StringBuilder message, RecommendContentsResponse recipe) {
     message.append(String.format("🔥 칼로리: %.0fkcal\n", recipe.calories()));
     message.append(
         String.format(
@@ -117,7 +116,7 @@ public class RecommendDietRecipeResponseBuilder {
             recipe.carbohydrates(), recipe.proteins(), recipe.fats()));
   }
 
-  private void appendIngredientsList(StringBuilder message, RecommendDietRecipeResponse recipe) {
+  private void appendIngredientsList(StringBuilder message, RecommendContentsResponse recipe) {
     if (!recipe.ingredients().isEmpty()) {
       message.append("📝 필요한 재료:\n");
       recipe
