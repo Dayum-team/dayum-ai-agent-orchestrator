@@ -51,10 +51,7 @@ public class GuardrailPlaybook implements Playbook {
   public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     String response =
         chatClientService.generateResponseMessage(
-            reason,
-            context,
-            userMessage,
-            ChatPrompt.GuardrailPrompt.SYSTEM_MESSAGE);
+            reason, context, userMessage, ChatPrompt.GuardrailPrompt.SYSTEM_MESSAGE);
     return new PlaybookResult(response);
   }
 

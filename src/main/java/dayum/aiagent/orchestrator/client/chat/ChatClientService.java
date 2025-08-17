@@ -121,10 +121,7 @@ public class ChatClientService {
   }
 
   public String generateResponseMessage(
-      String reason,
-      ConversationContext context,
-      UserMessage userMessage,
-      String systemMessage) {
+      String reason, ConversationContext context, UserMessage userMessage, String systemMessage) {
     try {
       String userMessagePrompt =
           handlebars

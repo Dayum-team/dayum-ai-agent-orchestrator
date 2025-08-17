@@ -1,15 +1,14 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.common;
 
-import java.util.List;
-
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -48,10 +47,7 @@ public class SmallTalkPlaybook implements Playbook {
   public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     String response =
         chatClientService.generateResponseMessage(
-            reason,
-            context,
-            userMessage,
-            ChatPrompt.SmallTalkPrompt.SYSTEM_MESSAGE);
+            reason, context, userMessage, ChatPrompt.SmallTalkPrompt.SYSTEM_MESSAGE);
     return new PlaybookResult(response);
   }
 
