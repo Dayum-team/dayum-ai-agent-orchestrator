@@ -54,8 +54,7 @@ public class GuardrailPlaybook implements Playbook {
             reason,
             context,
             userMessage,
-            ChatPrompt.GuardrailPrompt.SYSTEM_MESSAGE,
-            ChatPrompt.GuardrailPrompt.USER_MESSAGE_TEMPLATE);
+            ChatPrompt.GuardrailPrompt.SYSTEM_MESSAGE);
     return new PlaybookResult(response);
   }
 

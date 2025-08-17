@@ -9,14 +9,23 @@ public class ChatPrompt {
 
       [CURRENT_CONTEXT_KEY]
       {{currentContextKey}}
-      
+
       [CONTEXT_SHORT_TERM]
       {{#each shortTermContext}}
       - A: userMessage: {{userMessage}}
       - B: receivedMessage: {{receivedMessage}}
       {{/each}}
-      
+
       """;
+
+  public static final String USER_MESSAGE_TEMPLATE =
+      """
+	  [이 플레이북이 실행된 이유]
+	  {{reason}}
+
+	  [사용자 메시지]
+	  {{userMessage}}
+	  """;
 
   public static class PlannerPrompt {
 
@@ -30,7 +39,7 @@ public class ChatPrompt {
         - 결과는 오직 JSON만. 구조: {"steps":[{"playbook_id":"...", "reason":"...", "priority":1}, ...]}
         - steps 길이: 0~3.
         - SMALL_TALK_PLAYBOOK, GUARDRAIL_PLAYBOOK 은 다른 플레이북과 함께 계획될 수 없습니다. 항상, 단독으로 계획되어야합니다.
-        - 모든 step 은 해당 시점의 CURRENT_CONTEXT_KEY 집합을 만족해야 함. steps를  앞에서부터 순차 시뮬레이션하며, 
+        - 모든 step 은 해당 시점의 CURRENT_CONTEXT_KEY 집합을 만족해야 함. steps를  앞에서부터 순차 시뮬레이션하며,
           각 step이 생성하는 컨텍스트 키를 다음 step 평가에 반영.
         - CURRENT_CONTEXT_KEY가 [] 이면 1번에 올 수 있는 플레이북은 requiresContext == null 인 것들만입니다.
         - 다이어트 레시피에 대한 컨텐츠를 제공하는 것과 관련없거나, 정책/안전/금칙 관련 요청으로 판단되면
@@ -52,7 +61,7 @@ public class ChatPrompt {
 
         [PLAYBOOK_LIST]
         {{playbookList}}
-        
+
         [PLAYBOOK_CATALOG]
         {{playbookCatalog}}
         """;
@@ -180,7 +189,7 @@ public class ChatPrompt {
         3) 모순되면 사용자 최신 메시지를 우선합니다.
         4) 민감/개인 정보는 사용자가 먼저 언급한 범위 내에서만 재언급합니다.
         5) 불확실하면 최대 1개의 짧은 확인 질문으로 보완합니다.
-        
+
         [행동 원칙]
         - 답변은 1~2문장으로 간단히. 필요 시 짧은 확인 질문 1개까지.
         - 사용자의 언어와 말투를 그대로 맞춥니다(한국어 기본: 존댓말, 사용자가 반말이면 가볍게 맞춤).
@@ -192,15 +201,6 @@ public class ChatPrompt {
 
         [출력 형식]
         순수한 답변 문장만 출력합니다.
-        """;
-
-    public static final String USER_MESSAGE_TEMPLATE =
-        """
-        [이 플레이북이 실행된 이유]
-        {{reason}}
-
-        [사용자 메시지]
-        {{userMessage}}
         """;
   }
 
@@ -221,15 +221,6 @@ public class ChatPrompt {
 
         [출력 형식]
         순수한 답변 문장만 출력합니다.
-        """;
-
-    public static final String USER_MESSAGE_TEMPLATE =
-        """
-        [이 플레이북이 실행된 이유]
-        {{reason}}
-
-        [사용자 메시지]
-        {{userMessage}}
         """;
   }
 }

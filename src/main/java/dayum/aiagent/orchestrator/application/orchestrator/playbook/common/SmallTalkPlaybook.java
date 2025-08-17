@@ -51,8 +51,7 @@ public class SmallTalkPlaybook implements Playbook {
             reason,
             context,
             userMessage,
-            ChatPrompt.SmallTalkPrompt.SYSTEM_MESSAGE,
-            ChatPrompt.SmallTalkPrompt.USER_MESSAGE_TEMPLATE);
+            ChatPrompt.SmallTalkPrompt.SYSTEM_MESSAGE);
     return new PlaybookResult(response);
   }
 

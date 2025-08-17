@@ -124,12 +124,11 @@ public class ChatClientService {
       String reason,
       ConversationContext context,
       UserMessage userMessage,
-      String systemMessage,
-      String userMessageTemplate) {
+      String systemMessage) {
     try {
       String userMessagePrompt =
           handlebars
-              .compileInline(userMessageTemplate)
+              .compileInline(ChatPrompt.USER_MESSAGE_TEMPLATE)
               .apply(
                   new HashMap<String, Object>() {
                     {
