@@ -12,7 +12,7 @@ public interface Playbook {
 
   PlaybookCatalog getCatalog();
 
-  PlaybookResult play(ConversationContext context, UserMessage userMessage);
+  PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage);
 
   PlaybookType getType();
 

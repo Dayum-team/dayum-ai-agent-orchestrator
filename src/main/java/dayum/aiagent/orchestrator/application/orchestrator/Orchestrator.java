@@ -1,11 +1,5 @@
 package dayum.aiagent.orchestrator.application.orchestrator;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ContextValue;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
@@ -15,7 +9,12 @@ import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class Orchestrator {
       }
 
       // 3. Playbook 실행
-      PlaybookResult result = plan.playbook().play(context, userMessage);
+      PlaybookResult result = plan.playbook().play(plan.reason(), context, userMessage);
       results.add(result);
 
       // 4. 결과의 output을 원본 context에 upsert

@@ -37,7 +37,7 @@ public class RememberTasteAttributePlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     return null;
   }
 

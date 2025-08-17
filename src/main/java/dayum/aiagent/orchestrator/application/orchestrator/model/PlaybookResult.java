@@ -10,4 +10,13 @@ public record PlaybookResult(
     String title,
     String message,
     List<QuickReply> quickReplies,
-    Map<ContextType, ContextValue> output) {}
+    Map<ContextType, ContextValue> output) {
+
+  public PlaybookResult(String title, String message) {
+    this(title, message, List.of(), Map.of());
+  }
+
+  public PlaybookResult(String message) {
+    this("", message);
+  }
+}
