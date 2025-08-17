@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.dietrecipe.generate;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
 
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.common.enums.QuickReply;

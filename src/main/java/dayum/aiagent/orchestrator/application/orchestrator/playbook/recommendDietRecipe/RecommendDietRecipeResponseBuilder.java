@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.dietrecipe.recommend;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.recommendDietRecipe;
 
 import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;

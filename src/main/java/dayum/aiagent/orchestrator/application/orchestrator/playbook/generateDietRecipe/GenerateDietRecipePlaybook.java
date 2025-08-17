@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.dietrecipe.generate;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
