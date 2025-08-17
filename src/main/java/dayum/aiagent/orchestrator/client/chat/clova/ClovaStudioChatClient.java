@@ -5,10 +5,10 @@ import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
 import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.client.chat.ModelType;
-import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionRequest;
+import dayum.aiagent.orchestrator.client.chat.clova.dto.ChatCompletionRequest;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
-import dayum.aiagent.orchestrator.client.chat.dto.Schema.*;
+import dayum.aiagent.orchestrator.client.chat.schema.SchemaFactory.*;
 import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ClovaStudioChatClient implements ChatClient {
   public ChatCompletionResponse chatCompletion(
       String systemMessage, String userMessage, ModelType modelType) {
     try {
-      var request = ClovaChatCompletionRequest.of(systemMessage, userMessage);
+      var request = ChatCompletionRequest.of(modelType, systemMessage, userMessage);
       var response = this.sendRequest(request, modelType);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
@@ -55,7 +55,8 @@ public class ClovaStudioChatClient implements ChatClient {
                       this.put("currentContextKey", context.contexts().keySet());
                     }
                   });
-      var request = ClovaChatCompletionRequest.of(systemMessage, contextMessage + userMessage);
+      var request =
+          ChatCompletionRequest.of(modelType, systemMessage, contextMessage + userMessage);
       var response = this.sendRequest(request, modelType);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
@@ -76,7 +77,7 @@ public class ClovaStudioChatClient implements ChatClient {
   }
 
   @Override
-  public ChatCompletionResponse chatCompletionForStructuredMessage(
+  public ChatCompletionResponse chatCompletionWithStructuredOutput(
       String systemMessage,
       String userMessage,
       ConversationContext context,
@@ -95,8 +96,8 @@ public class ClovaStudioChatClient implements ChatClient {
                     }
                   });
       var request =
-          ClovaChatCompletionRequest.forStructuredOutput(
-              systemMessage, contextMessage + userMessage, outputSchema);
+          ChatCompletionRequest.forStructuredOutputs(
+              modelType, systemMessage, contextMessage + userMessage, outputSchema);
       var response = this.sendRequest(request, modelType);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
@@ -107,7 +108,7 @@ public class ClovaStudioChatClient implements ChatClient {
   }
 
   private ClovaChatCompletionResponse sendRequest(
-      ClovaChatCompletionRequest request, ModelType modelType) {
+      ChatCompletionRequest request, ModelType modelType) {
     return Try.ofCallable(
             () ->
                 restClient

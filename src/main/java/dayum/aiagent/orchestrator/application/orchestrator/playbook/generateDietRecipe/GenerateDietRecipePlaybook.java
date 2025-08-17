@@ -1,36 +1,28 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
+
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
-import dayum.aiagent.orchestrator.application.context.model.ContextValue;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
-import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
-import dayum.aiagent.orchestrator.application.tools.ToolRegistry;
-import dayum.aiagent.orchestrator.application.tools.ToolType;
-import dayum.aiagent.orchestrator.common.vo.Ingredient;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class GenerateDietRecipePlaybook implements Playbook {
 
-  private final ToolRegistry toolRegistry;
-  private final ObjectMapper objectMapper;
+  private final ChatClientService chatClientService;
   private final GenerateDietRecipeResponseBuilder responseBuilder;
 
   private static final PlaybookCatalog CATALOG =
@@ -66,21 +58,10 @@ public class GenerateDietRecipePlaybook implements Playbook {
 
   @Override
   public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
-    List<Ingredient> ingredients = getIngredientsFromPantry(context);
-    String requestJson = createToolRequest(ingredients);
-
-    String toolResponse =
-        toolRegistry.execute(ToolType.GENERATE_DIET_RECIPE.getName(), requestJson, context);
-
-    if (toolResponse == null || toolResponse.trim().isEmpty()) {
-      return responseBuilder.createGenerationFailedResponse();
-    }
-
+    PantryContext pantryContext = (PantryContext) context.contexts().get(ContextType.PANTRY);
     try {
-      String actualJson = objectMapper.readValue(toolResponse, String.class);
-      GeneratedRecipeModels.GeneratedRecipesResponse response =
-          objectMapper.readValue(actualJson, GeneratedRecipeModels.GeneratedRecipesResponse.class);
-
+      var response = chatClientService.generateDietRecipes(context, pantryContext.ingredients());
+      // TODO: Pantry 없을때 throws?
       return responseBuilder.buildResponse(response);
     } catch (Exception e) {
       log.error("Failed to parse generated recipes", e);
@@ -96,37 +77,5 @@ public class GenerateDietRecipePlaybook implements Playbook {
   @Override
   public List<ContextType> getRequiresContext() {
     return List.of(ContextType.PANTRY);
-  }
-
-  private List<Ingredient> getIngredientsFromPantry(ConversationContext context) {
-    List<Ingredient> ingredients = new ArrayList<>();
-    ContextValue contextValue = context.contexts().get(ContextType.PANTRY);
-
-    if (contextValue instanceof PantryContext pantryContext
-        && !pantryContext.ingredients().isEmpty()) {
-      ingredients.addAll(pantryContext.ingredients());
-    }
-
-    return ingredients;
-  }
-
-  private String createToolRequest(List<Ingredient> ingredients) {
-    try {
-      Map<String, Object> requestMap = new HashMap<>();
-      List<Map<String, String>> ingredientsList =
-          ingredients.stream()
-              .map(
-                  ingredient ->
-                      Map.of(
-                          "name", ingredient.name(),
-                          "quantity", ingredient.quantity()))
-              .toList();
-
-      requestMap.put("ingredients", ingredientsList);
-      return objectMapper.writeValueAsString(requestMap);
-    } catch (Exception e) {
-      log.error("Failed to create generate request", e);
-      return "{\"ingredients\": []}";
-    }
   }
 }

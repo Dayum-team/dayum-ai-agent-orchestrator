@@ -1,29 +1,31 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.recommendDietRecipe;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dayum.aiagent.orchestrator.application.context.model.*;
 import dayum.aiagent.orchestrator.application.orchestrator.model.*;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.*;
 import dayum.aiagent.orchestrator.application.tools.*;
-import dayum.aiagent.orchestrator.application.tools.dietrecipe.model.RecommendDietRecipeResponse;
+import dayum.aiagent.orchestrator.client.dayum.DayumApiClient;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class RecommendDietRecipePlaybook implements Playbook {
 
-  private final ToolRegistry toolRegistry;
-  private final ObjectMapper objectMapper;
+  private final DayumApiClient dayumApiClient;
   private final RecommendDietRecipeResponseBuilder responseBuilder;
+  private final ObjectMapper objectMapper;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -46,23 +48,11 @@ public class RecommendDietRecipePlaybook implements Playbook {
 
   @Override
   public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
-    // 1. Pantry 검증
-    ContextValue contextValue = context.contexts().get(ContextType.PANTRY);
-    if (!(contextValue instanceof PantryContext pantryContext)
-        || pantryContext.ingredients().isEmpty()) {
-      return responseBuilder.createNoPantryResponse();
-    }
-
-    // 2. Tool 요청 생성 및 실행
-    String requestJson = createToolRequest(pantryContext.ingredients());
-    String toolResponse =
-        toolRegistry.execute(ToolType.RECOMMEND_DIET_RECIPE.getName(), requestJson, context);
-
-    // 3. 응답 파싱
-    List<RecommendDietRecipeResponse> recipes = parseToolResponse(toolResponse);
-
-    // 4. 응답 생성
-    return responseBuilder.buildResponse(recipes, pantryContext);
+    PantryContext pantryContext = (PantryContext) context.contexts().get(ContextType.PANTRY);
+    // TODO: Pantry 없을때 throws?
+    var response = dayumApiClient.recommendContentsBy(pantryContext.ingredients(), 5);
+    // TODO: 없을때 Fallback 으로 generate..?
+    return responseBuilder.buildResponse(response, pantryContext);
   }
 
   @Override

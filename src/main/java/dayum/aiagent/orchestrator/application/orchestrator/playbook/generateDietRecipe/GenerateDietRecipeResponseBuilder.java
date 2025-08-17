@@ -1,19 +1,19 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
 
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
+import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
 import dayum.aiagent.orchestrator.common.enums.QuickReply;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class GenerateDietRecipeResponseBuilder {
 
-  public PlaybookResult buildResponse(GeneratedRecipeModels.GeneratedRecipesResponse response) {
-    List<GeneratedRecipeModels.GeneratedRecipe> recipes = response.recipes();
+  public PlaybookResult buildResponse(GeneratedRecipesResponse response) {
+    List<GeneratedRecipesResponse.GeneratedRecipe> recipes = response.recipes();
 
     if (recipes.isEmpty()) {
       return createNoResultResponse();
@@ -33,8 +33,7 @@ public class GenerateDietRecipeResponseBuilder {
   }
 
   private PlaybookResult createSingleRecipeResponse(
-      GeneratedRecipeModels.GeneratedRecipe recipe,
-      GeneratedRecipeModels.GeneratedRecipesResponse fullResponse) {
+      GeneratedRecipesResponse.GeneratedRecipe recipe, GeneratedRecipesResponse fullResponse) {
 
     StringBuilder message = new StringBuilder();
     message.append(String.format("✨ **%s**를 만들어드렸어요!\n\n", recipe.title()));
@@ -61,21 +60,20 @@ public class GenerateDietRecipeResponseBuilder {
   }
 
   private PlaybookResult createMultipleRecipesResponse(
-      List<GeneratedRecipeModels.GeneratedRecipe> recipes,
-      GeneratedRecipeModels.GeneratedRecipesResponse fullResponse) {
+      List<GeneratedRecipesResponse.GeneratedRecipe> recipes,
+      GeneratedRecipesResponse fullResponse) {
 
     StringBuilder message = new StringBuilder();
     message.append(String.format("✨ %d가지 레시피를 만들어드렸어요!\n\n", recipes.size()));
 
     for (int i = 0; i < recipes.size(); i++) {
-      GeneratedRecipeModels.GeneratedRecipe recipe = recipes.get(i);
+      GeneratedRecipesResponse.GeneratedRecipe recipe = recipes.get(i);
       message.append(String.format("**%d. %s**\n", i + 1, recipe.title()));
       message.append(
           String.format("   ⏱️ %d분 | 🔥 %dkcal | ", recipe.timeMinutes(), recipe.caloriesKcal()));
       message.append(
           String.format(
-              "단백질 %dg · 탄수화물 %dg · 지방 %dg\n",
-              recipe.macros().proteinG(), recipe.macros().carbG(), recipe.macros().fatG()));
+              "단백질 %dg · 탄수화물 %dg · 지방 %dg\n", recipe.proteinG(), recipe.carbG(), recipe.fatG()));
 
       if (i < recipes.size() - 1) {
         message.append("\n");
@@ -100,7 +98,7 @@ public class GenerateDietRecipeResponseBuilder {
   }
 
   private void appendBasicInfo(
-      StringBuilder message, GeneratedRecipeModels.GeneratedRecipe recipe) {
+      StringBuilder message, GeneratedRecipesResponse.GeneratedRecipe recipe) {
     message.append(
         String.format(
             "⏱️ 조리시간: %d분 | 🍽️ %d인분 | 🔥 %dkcal\n",
@@ -108,11 +106,11 @@ public class GenerateDietRecipeResponseBuilder {
     message.append(
         String.format(
             "📊 영양성분: 단백질 %dg · 탄수화물 %dg · 지방 %dg\n\n",
-            recipe.macros().proteinG(), recipe.macros().carbG(), recipe.macros().fatG()));
+            recipe.proteinG(), recipe.carbG(), recipe.fatG()));
   }
 
   private void appendIngredients(
-      StringBuilder message, GeneratedRecipeModels.GeneratedRecipe recipe) {
+      StringBuilder message, GeneratedRecipesResponse.GeneratedRecipe recipe) {
     message.append("📝 **필요한 재료**\n");
     recipe
         .ingredientsUsed()
@@ -130,7 +128,7 @@ public class GenerateDietRecipeResponseBuilder {
   }
 
   private void appendCookingSteps(
-      StringBuilder message, GeneratedRecipeModels.GeneratedRecipe recipe) {
+      StringBuilder message, GeneratedRecipesResponse.GeneratedRecipe recipe) {
     message.append("\n👨‍🍳 **조리 과정**\n");
     for (int i = 0; i < recipe.steps().size(); i++) {
       message.append(String.format("%d. %s\n", i + 1, recipe.steps().get(i)));
@@ -139,8 +137,8 @@ public class GenerateDietRecipeResponseBuilder {
 
   private void appendAdditionalInfo(
       StringBuilder message,
-      GeneratedRecipeModels.GeneratedRecipe recipe,
-      GeneratedRecipeModels.GeneratedRecipesResponse fullResponse) {
+      GeneratedRecipesResponse.GeneratedRecipe recipe,
+      GeneratedRecipesResponse fullResponse) {
     if (recipe.notes() != null && !recipe.notes().isEmpty()) {
       message.append(String.format("\n💬 %s\n", recipe.notes()));
     }
