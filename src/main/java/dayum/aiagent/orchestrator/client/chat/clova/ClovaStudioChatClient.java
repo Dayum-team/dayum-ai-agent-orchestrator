@@ -2,6 +2,7 @@ package dayum.aiagent.orchestrator.client.chat.clova;
 
 import com.github.jknack.handlebars.Handlebars;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
 import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.client.chat.ModelType;
@@ -13,6 +14,7 @@ import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
