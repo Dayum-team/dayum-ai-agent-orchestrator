@@ -64,43 +64,4 @@ public class RecommendDietRecipePlaybook implements Playbook {
   public List<ContextType> getRequiresContext() {
     return List.of(ContextType.PANTRY);
   }
-
-  private String createToolRequest(List<Ingredient> ingredients) {
-    try {
-      Map<String, Object> requestMap = new HashMap<>();
-
-      List<Map<String, String>> ingredientsList =
-          ingredients.stream()
-              .map(
-                  ingredient ->
-                      Map.of(
-                          "name", ingredient.name(),
-                          "quantity", ingredient.quantity()))
-              .toList();
-
-      requestMap.put("ingredients", ingredientsList);
-
-      return objectMapper.writeValueAsString(requestMap);
-    } catch (Exception e) {
-      log.error("Failed to create tool request", e);
-      return "{\"ingredients\": []}";
-    }
-  }
-
-  private List<RecommendDietRecipeResponse> parseToolResponse(String toolResponse) {
-    try {
-      if (toolResponse == null || toolResponse.trim().isEmpty()) {
-        return List.of();
-      }
-
-      return objectMapper.readValue(
-          toolResponse,
-          objectMapper
-              .getTypeFactory()
-              .constructCollectionType(List.class, RecommendDietRecipeResponse.class));
-    } catch (Exception e) {
-      log.error("Failed to parse tool response", e);
-      return List.of();
-    }
-  }
 }
