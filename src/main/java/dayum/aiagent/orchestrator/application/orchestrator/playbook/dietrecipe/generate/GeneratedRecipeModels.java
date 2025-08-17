@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.dietrecipe.generate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;

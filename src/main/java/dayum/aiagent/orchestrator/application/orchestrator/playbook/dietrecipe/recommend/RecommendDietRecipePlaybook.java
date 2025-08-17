@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook.recommendDietRecipe;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.dietrecipe.recommend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dayum.aiagent.orchestrator.application.context.model.*;
