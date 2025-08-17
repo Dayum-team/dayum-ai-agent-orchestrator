@@ -5,7 +5,7 @@ import dayum.aiagent.orchestrator.application.tools.Tool;
 import dayum.aiagent.orchestrator.application.tools.ToolType;
 import dayum.aiagent.orchestrator.application.tools.dietrecipe.model.GenerateDietRecipesRequest;
 import dayum.aiagent.orchestrator.client.chat.ChatClientService;
-import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
+import dayum.aiagent.orchestrator.client.chat.dto.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +21,14 @@ public class GenerateDietRecipesTool implements Tool<GenerateDietRecipesRequest>
   }
 
   @Override
-  public ToolSignatureSchema.JsonSchema getSchema() {
-    return ToolSignatureSchema.ObjectSchema.object()
+  public Schema.JsonSchema getSchema() {
+    return Schema.ObjectSchema.object()
         .property(
             "ingredients",
-            ToolSignatureSchema.ArraySchema.array(
-                    ToolSignatureSchema.ObjectSchema.object()
-                        .property("name", ToolSignatureSchema.StringSchema.string().build())
-                        .property("quantity", ToolSignatureSchema.StringSchema.string().build())
+            Schema.ArraySchema.array(
+                    Schema.ObjectSchema.object()
+                        .property("name", Schema.StringSchema.string().build())
+                        .property("quantity", Schema.StringSchema.string().build())
                         .required("name")
                         .build())
                 .build())

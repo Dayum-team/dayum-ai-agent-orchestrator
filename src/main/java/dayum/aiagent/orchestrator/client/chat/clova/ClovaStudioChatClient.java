@@ -4,10 +4,11 @@ import com.github.jknack.handlebars.Handlebars;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
 import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
+import dayum.aiagent.orchestrator.client.chat.ModelType;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionRequest;
 import dayum.aiagent.orchestrator.client.chat.clova.dto.ClovaChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
-import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema.*;
+import dayum.aiagent.orchestrator.client.chat.dto.Schema.*;
 import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
@@ -27,20 +28,21 @@ public class ClovaStudioChatClient implements ChatClient {
   private final ClovaStudioProperties properties;
   private final RestClient restClient;
 
-  public ChatCompletionResponse chatCompletion(String systemMessage, String userMessage) {
+  public ChatCompletionResponse chatCompletion(
+      String systemMessage, String userMessage, ModelType modelType) {
     try {
       var request = ClovaChatCompletionRequest.of(systemMessage, userMessage);
-      var response = this.sendRequest(request);
+      var response = this.sendRequest(request, modelType);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
       return this.convert(response);
     } catch (Exception e) {
-      throw new RuntimeException();
+      throw new RuntimeException(e);
     }
   }
 
   public ChatCompletionResponse chatCompletion(
-      String systemMessage, String userMessage, ConversationContext context) {
+      String systemMessage, String userMessage, ConversationContext context, ModelType modelType) {
     try {
       String contextMessage =
           handlebars
@@ -50,36 +52,73 @@ public class ClovaStudioChatClient implements ChatClient {
                     {
                       this.put("rollingSummary", context.rollingSummary());
                       this.put("shortTermContext", context.shortTermContexts());
+                      this.put("currentContextKey", context.contexts().keySet());
                     }
                   });
       var request = ClovaChatCompletionRequest.of(systemMessage, contextMessage + userMessage);
-      var response = this.sendRequest(request);
+      var response = this.sendRequest(request, modelType);
       log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
       return this.convert(response);
     } catch (Exception e) {
-      throw new RuntimeException();
+      throw new RuntimeException(e);
     }
   }
 
   public ChatCompletionResponse chatCompletion(
-      String systemMessage, String userMessage, String context, List<ToolSchema> toolSchemas) {
+      String systemMessage,
+      String userMessage,
+      String context,
+      List<ToolSchema> toolSchemas,
+      ModelType modelType) {
     // TODO: Not Implemented
     return null;
   }
 
-  private ClovaChatCompletionResponse sendRequest(ClovaChatCompletionRequest request) {
+  @Override
+  public ChatCompletionResponse chatCompletionForStructuredMessage(
+      String systemMessage,
+      String userMessage,
+      ConversationContext context,
+      JsonSchema outputSchema,
+      ModelType modelType) {
+    try {
+      String contextMessage =
+          handlebars
+              .compileInline(ChatPrompt.CONTEXT_MESSAGE)
+              .apply(
+                  new HashMap<>() {
+                    {
+                      this.put("rollingSummary", context.rollingSummary());
+                      this.put("shortTermContext", context.shortTermContexts());
+                      this.put("currentContextKey", context.contexts().keySet());
+                    }
+                  });
+      var request =
+          ClovaChatCompletionRequest.forStructuredOutput(
+              systemMessage, contextMessage + userMessage, outputSchema);
+      var response = this.sendRequest(request, modelType);
+      log.info("Chat completion request : {}", request);
+      log.info("Chat completion response : {}", response);
+      return this.convert(response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private ClovaChatCompletionResponse sendRequest(
+      ClovaChatCompletionRequest request, ModelType modelType) {
     return Try.ofCallable(
             () ->
                 restClient
                     .post()
-                    .uri(properties.getBaseUrl())
+                    .uri(properties.getUrl() + "/" + modelType.getName())
                     .header("Authorization", "Bearer " + properties.getApiKey())
                     .header("X-NCP-CLOVASTUDIO-REQUEST-ID", UUID.randomUUID().toString())
                     .body(request)
                     .retrieve()
                     .body(ClovaChatCompletionResponse.class))
-        .getOrElseThrow(() -> new RuntimeException());
+        .getOrElseThrow(ex -> new RuntimeException(ex));
   }
 
   private ChatCompletionResponse convert(ClovaChatCompletionResponse response) {

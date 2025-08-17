@@ -1,13 +1,13 @@
 package dayum.aiagent.orchestrator.application.tools;
 
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.client.chat.dto.ToolSignatureSchema;
+import dayum.aiagent.orchestrator.client.chat.dto.Schema;
 
 public interface Tool<ReqT extends ToolRequest> {
 
   ToolType getType();
 
-  ToolSignatureSchema.JsonSchema getSchema();
+  Schema.JsonSchema getSchema();
 
   Class<ReqT> getRequestType();
 

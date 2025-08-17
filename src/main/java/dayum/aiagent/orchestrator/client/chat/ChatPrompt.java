@@ -7,6 +7,9 @@ public class ChatPrompt {
       [CONTEXT_ROLLING_SUMMARY]
       {{rollingSummary}}
 
+      [CURRENT_CONTEXT_KEY]
+      {{currentContextKey}}
+      
       [CONTEXT_SHORT_TERM]
       {{#each shortTermContext}}
       - A: userMessage: {{userMessage}}
@@ -14,6 +17,45 @@ public class ChatPrompt {
       {{/each}}
       
       """;
+
+  public static class PlannerPrompt {
+
+    public static final String SYSTEM_MESSAGE =
+        """
+        당신은 대화형 에이전트의 “플레이북 플래너”입니다.
+        입력으로 제공된 사용자 message, short_term_context에, rolling_summary, playbook_catalog 를 바탕으로 실행 순서가
+        정해진 steps(최대 3개)를 선택하세요.
+
+        원칙:
+        - 결과는 오직 JSON만. 구조: {"steps":[{"playbook_id":"...", "reason":"...", "priority":1}, ...]}
+        - steps 길이: 0~3.
+        - 모든 step 은 해당 시점의 CURRENT_CONTEXT_KEY 집합을 만족해야 함. steps를  앞에서부터 순차 시뮬레이션하며, 
+          각 step이 생성하는 컨텍스트 키를 다음 step 평가에 반영.
+        - CURRENT_CONTEXT_KEY가 [] 이면 1번에 올 수 있는 플레이북은 requiresContext == null 인 것들만입니다.
+        - 다이어트 레시피에 대한 컨텐츠를 제공하는 것과 관련없거나, 정책/안전/금칙 관련 요청으로 판단되면
+          GuardrailPlaybook 1개만 넣고 종료.
+        - SmallTalkPlaybook 보다 항상 GuardrailPlaybook 을 먼저 검사해 안전한 경우에만 SmallTalkPlaybook 를 계획.
+        - playbook_catalog 에 존재하지 않는 플레이북은 절대 포함하지 말것.
+        - 계획에 포함되는 플레이북은 항상 PLAYBOOK_LIST 에 포함되는 것으로 제한.
+        - 왜 계획을 그렇게 세웠는지에 대한 근거를 reason 에 한글로 작성할것.
+        - priority는 1..N의 연속된 정수, 실행 순서를 의미.
+        """;
+
+    public static final String USER_MESSAGE_TEMPLATE =
+        """
+        [USER_MESSAGE]
+        {{userMessage}}
+
+        [CURRENT_CONTEXT_KEY]
+        {{currentContextKey}}
+
+        [PLAYBOOK_LIST]
+        {{playbookList}}
+        
+        [PLAYBOOK_CATALOG]
+        {{playbookCatalog}}
+        """;
+  }
 
   public static class GenerateRecipesPrompt {
 
