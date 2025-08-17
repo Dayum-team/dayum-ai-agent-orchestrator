@@ -3,6 +3,7 @@ package dayum.aiagent.orchestrator.infrastructor.repository;
 import dayum.aiagent.orchestrator.application.context.model.ShortTermContext;
 import dayum.aiagent.orchestrator.application.context.port.ShortTermContextRepository;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -14,7 +15,7 @@ public class ShortTermContextInMemoryRepository implements ShortTermContextRepos
 
   private static final int MAX_SIZE_CONTEXT = 3;
   private final AtomicReference<Map<String, Deque<ShortTermContext>>> contexts =
-      new AtomicReference<>();
+      new AtomicReference<>(new HashMap<>());
 
   @Override
   public List<ShortTermContext> fetchBy(String sessionId) {

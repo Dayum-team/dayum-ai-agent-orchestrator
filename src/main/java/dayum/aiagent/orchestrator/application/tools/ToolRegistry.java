@@ -2,6 +2,7 @@ package dayum.aiagent.orchestrator.application.tools;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.client.chat.schema.JsonSchemaGenerator;
 import dayum.aiagent.orchestrator.client.chat.schema.SchemaFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +20,17 @@ public class ToolRegistry {
   public List<SchemaFactory.ToolSchema> getToolSchemaList() {
     return tools.stream()
         .map(
-            tool -> {
-              var type = tool.getType();
-              return new SchemaFactory.ToolSchema(
-                  type.getName(), type.getDescription(), tool.getSchema());
-            })
+            tool ->
+                new SchemaFactory.ToolSchema(
+                    tool.getName(),
+                    tool.getDescription(),
+                    JsonSchemaGenerator.generate(tool.getClass())))
         .toList();
   }
 
   public String execute(String toolName, String argumentsJsonString, ConversationContext context) {
     var selectedTool =
-        tools.stream().filter(tool -> tool.getType().getName().equals(toolName)).findFirst().get();
+        tools.stream().filter(tool -> tool.getName().equals(toolName)).findFirst().get();
     return this.execute(selectedTool, argumentsJsonString, context);
   }
 

@@ -3,19 +3,19 @@ package dayum.aiagent.orchestrator.application.orchestrator;
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ContextValue;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookPlanResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
-import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class Orchestrator {
@@ -24,6 +24,7 @@ public class Orchestrator {
 
   public List<PlaybookResult> runTurn(ConversationContext context, UserMessage userMessage) {
     List<PlaybookPlanResult> plans = planner.planning(context, userMessage);
+    log.info("Playbook plans : {}", plans);
     List<PlaybookResult> results = new ArrayList<>();
 
     for (PlaybookPlanResult plan : plans) {
@@ -46,44 +47,11 @@ public class Orchestrator {
       results.add(result);
 
       // 4. 결과의 output을 원본 context에 upsert
-      if (result.output() != null) {
-        upsertContexts(context.contexts(), result.output());
-      }
+      context.merge(result.output());
     }
 
     // TODO : Validator 거쳐서 최종 응답 반환
     return results;
-  }
-
-  /** 컨텍스트 upsert 처리 */
-  private void upsertContexts(
-      Map<ContextType, ContextValue> currentContexts, Map<ContextType, ContextValue> newContexts) {
-
-    newContexts.forEach(
-        (type, newValue) -> {
-          if (newValue == null) return;
-
-          if (type == ContextType.PANTRY) {
-            currentContexts.merge(
-                type,
-                newValue,
-                (existing, incoming) -> {
-                  if (!(existing instanceof PantryContext existingPantry)
-                      || !(incoming instanceof PantryContext newPantry)) {
-                    return incoming;
-                  }
-
-                  // LinkedHashMap으로 순서 유지하면서 중복 제거
-                  Map<String, Ingredient> merged = new LinkedHashMap<>();
-                  existingPantry.ingredients().forEach(ing -> merged.put(ing.name(), ing));
-                  newPantry.ingredients().forEach(ing -> merged.put(ing.name(), ing));
-
-                  return new PantryContext(new ArrayList<>(merged.values()));
-                });
-          } else {
-            currentContexts.put(type, newValue);
-          }
-        });
   }
 
   /** 현재 컨텍스트에 없는 필수 컨텍스트 찾기 */
