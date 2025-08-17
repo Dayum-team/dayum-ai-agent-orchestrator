@@ -1,0 +1,111 @@
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.recommendDietRecipe;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dayum.aiagent.orchestrator.application.context.model.*;
+import dayum.aiagent.orchestrator.application.orchestrator.model.*;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.*;
+import dayum.aiagent.orchestrator.application.tools.*;
+import dayum.aiagent.orchestrator.application.tools.dietrecipe.model.RecommendDietRecipeResponse;
+import dayum.aiagent.orchestrator.common.vo.Ingredient;
+import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class RecommendDietRecipePlaybook implements Playbook {
+
+  private final ToolRegistry toolRegistry;
+  private final ObjectMapper objectMapper;
+  private final RecommendDietRecipeResponseBuilder responseBuilder;
+
+  private static final PlaybookCatalog CATALOG =
+      PlaybookCatalog.builder()
+          .id(PlaybookType.RECOMMEND_DIET_RECIPE.name())
+          .action("PANTRY 에 포함된 사용자가 보유한 재료와 일치하는 기존 레시피 영상을 검색하여 추천")
+          .requiresContext(List.of(ContextType.PANTRY.name()))
+          .trigger(List.of("다이어트 레시피를 추천해달라는 요청", "가지고있는 재료로 만들 수 있는 레시피 추천 요청"))
+          .cautions(
+              List.of(
+                  "반드시 PANTRY 가 USER_CONTEXT_KEY 에 있는경우 선택",
+                  "재료 매칭률이 높은 순으로 정렬",
+                  "레시피 영상이 있는 것만 추천",
+                  "재료가 부족해도 대체 가능한 레시피 포함"))
+          .build();
+
+  @Override
+  public PlaybookCatalog getCatalog() {
+    return CATALOG;
+  }
+
+  @Override
+  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
+    // 1. Pantry 검증
+    ContextValue contextValue = context.contexts().get(ContextType.PANTRY);
+    if (!(contextValue instanceof PantryContext pantryContext)
+        || pantryContext.ingredients().isEmpty()) {
+      return responseBuilder.createNoPantryResponse();
+    }
+
+    // 2. Tool 요청 생성 및 실행
+    String requestJson = createToolRequest(pantryContext.ingredients());
+    String toolResponse =
+        toolRegistry.execute(ToolType.RECOMMEND_DIET_RECIPE.getName(), requestJson, context);
+
+    // 3. 응답 파싱
+    List<RecommendDietRecipeResponse> recipes = parseToolResponse(toolResponse);
+
+    // 4. 응답 생성
+    return responseBuilder.buildResponse(recipes, pantryContext);
+  }
+
+  @Override
+  public PlaybookType getType() {
+    return PlaybookType.RECOMMEND_DIET_RECIPE;
+  }
+
+  private String createToolRequest(List<Ingredient> ingredients) {
+    try {
+      Map<String, Object> requestMap = new HashMap<>();
+
+      List<Map<String, String>> ingredientsList =
+          ingredients.stream()
+              .map(
+                  ingredient ->
+                      Map.of(
+                          "name", ingredient.name(),
+                          "quantity", ingredient.quantity()))
+              .toList();
+
+      requestMap.put("ingredients", ingredientsList);
+
+      return objectMapper.writeValueAsString(requestMap);
+    } catch (Exception e) {
+      log.error("Failed to create tool request", e);
+      return "{\"ingredients\": []}";
+    }
+  }
+
+  private List<RecommendDietRecipeResponse> parseToolResponse(String toolResponse) {
+    try {
+      if (toolResponse == null || toolResponse.trim().isEmpty()) {
+        return List.of();
+      }
+
+      return objectMapper.readValue(
+          toolResponse,
+          objectMapper
+              .getTypeFactory()
+              .constructCollectionType(List.class, RecommendDietRecipeResponse.class));
+    } catch (Exception e) {
+      log.error("Failed to parse tool response", e);
+      return List.of();
+    }
+  }
+}
