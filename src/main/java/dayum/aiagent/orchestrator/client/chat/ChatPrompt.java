@@ -39,6 +39,7 @@ public class ChatPrompt {
         - 결과는 오직 JSON만. 구조: {"steps":[{"playbook_id":"...", "reason":"...", "priority":1}, ...]}
         - steps 길이: 0~3.
         - SMALL_TALK_PLAYBOOK, GUARDRAIL_PLAYBOOK 은 다른 플레이북과 함께 계획될 수 없습니다. 항상, 단독으로 계획되어야합니다.
+        - 사용자 최근 메시지에 음식/재료에 대한 것이 포함되어 있다면 항상 첫 번째 step 으로 REMEMBER_INGREDIENT_PLAYBOOK 이 와야합니다.
         - 모든 step 은 해당 시점의 CURRENT_CONTEXT_KEY 집합을 만족해야 함. steps를  앞에서부터 순차 시뮬레이션하며,
           각 step이 생성하는 컨텍스트 키를 다음 step 평가에 반영.
         - CURRENT_CONTEXT_KEY가 [] 이면 1번에 올 수 있는 플레이북은 requiresContext == null 인 것들만입니다.
