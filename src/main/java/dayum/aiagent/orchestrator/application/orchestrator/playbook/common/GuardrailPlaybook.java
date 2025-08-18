@@ -1,18 +1,23 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook;
-
-import java.util.List;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.common;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
+import dayum.aiagent.orchestrator.client.chat.ChatPrompt;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class GuardrailPlaybook implements Playbook {
+
+  private final ChatClientService chatClientService;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -44,12 +49,20 @@ public class GuardrailPlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
-    return null;
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
+    String response =
+        chatClientService.generateResponseMessage(
+            reason, context, userMessage, ChatPrompt.GuardrailPrompt.SYSTEM_MESSAGE);
+    return new PlaybookResult(response);
   }
 
   @Override
   public PlaybookType getType() {
     return PlaybookType.GUARDRAIL;
+  }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
   }
 }

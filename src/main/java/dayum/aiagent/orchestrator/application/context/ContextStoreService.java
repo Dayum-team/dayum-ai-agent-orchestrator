@@ -35,6 +35,7 @@ public class ContextStoreService {
       String receivedMessage) {
     var newContext = new ShortTermContext(userMessage, receivedMessage);
     shortTermContextRepository.append(sessionId, newContext);
+    domainContextRepository.update(sessionId, context.contexts());
     rollingSummaryService.update(sessionId, context.rollingSummary(), newContext);
   }
 }

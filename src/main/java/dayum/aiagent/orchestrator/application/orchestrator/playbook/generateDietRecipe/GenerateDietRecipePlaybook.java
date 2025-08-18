@@ -1,17 +1,27 @@
-package dayum.aiagent.orchestrator.application.orchestrator.playbook;
+package dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe;
+
+import java.util.List;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.PantryContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class GenerateDietRecipePlaybook implements Playbook {
+
+  private final ChatClientService chatClientService;
+  private final GenerateDietRecipeResponseBuilder responseBuilder;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -45,12 +55,25 @@ public class GenerateDietRecipePlaybook implements Playbook {
   }
 
   @Override
-  public PlaybookResult play(ConversationContext context, UserMessage userMessage) {
-    return null;
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
+    PantryContext pantryContext = (PantryContext) context.contexts().get(ContextType.PANTRY);
+    try {
+      var response = chatClientService.generateDietRecipes(context, pantryContext.ingredients());
+      // TODO: Pantry 없을때 throws?
+      return responseBuilder.buildResponse(response);
+    } catch (Exception e) {
+      log.error("Failed to parse generated recipes", e);
+      return responseBuilder.createGenerationFailedResponse();
+    }
   }
 
   @Override
   public PlaybookType getType() {
     return PlaybookType.GENERATE_DIET_RECIPE;
+  }
+
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of(ContextType.PANTRY);
   }
 }

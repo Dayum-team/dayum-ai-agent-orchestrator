@@ -1,4 +1,4 @@
-package dayum.aiagent.orchestrator.client.chat.dto;
+package dayum.aiagent.orchestrator.client.chat.schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class Schema {
-  private Schema() {}
+public final class SchemaFactory {
+  private SchemaFactory() {}
 
   public sealed interface JsonSchema
       permits ObjectSchema, ArraySchema, StringSchema, IntegerSchema {}
@@ -183,5 +183,6 @@ public final class Schema {
   public record ToolSchema(String name, String description, JsonSchema parameters) {}
 
   public record Function(String type, ToolSchema function) {}
+
   public record Json(String type, JsonSchema schema) {}
 }

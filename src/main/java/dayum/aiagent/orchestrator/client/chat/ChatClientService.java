@@ -6,8 +6,9 @@ import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.PlanningPlaybookResponse;
-import dayum.aiagent.orchestrator.client.chat.dto.Schema;
+import dayum.aiagent.orchestrator.client.chat.schema.JsonSchemaGenerator;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import java.util.ArrayList;
@@ -50,22 +51,11 @@ public class ChatClientService {
                     }
                   });
       ChatCompletionResponse response =
-          chatClient.chatCompletionForStructuredMessage(
+          chatClient.chatCompletionWithStructuredOutput(
               ChatPrompt.PlannerPrompt.SYSTEM_MESSAGE,
               userMessagePrompt,
               context,
-              Schema.ObjectSchema.object()
-                  .property(
-                      "steps",
-                      Schema.ArraySchema.array(
-                              Schema.ObjectSchema.object()
-                                  .property("playbook_id", Schema.StringSchema.string().build())
-                                  .property("reason", Schema.StringSchema.string().build())
-                                  .property("priority", Schema.IntegerSchema.integer().build())
-                                  .required("playbook_id", "reason", "priority")
-                                  .build())
-                          .build())
-                  .build(),
+              JsonSchemaGenerator.generate(PlanningPlaybookResponse.class),
               ModelType.HCX_007);
       return objectMapper.readValue(response.message(), PlanningPlaybookResponse.class);
     } catch (Exception e) {
@@ -101,7 +91,8 @@ public class ChatClientService {
     }
   }
 
-  public String generateDietRecipes(ConversationContext context, List<Ingredient> ingredients) {
+  public GeneratedRecipesResponse generateDietRecipes(
+      ConversationContext context, List<Ingredient> ingredients) {
     try {
       String userMessagePrompt =
           handlebars
@@ -116,18 +107,38 @@ public class ChatClientService {
                     }
                   });
       ChatCompletionResponse response =
-          chatClient.chatCompletion(
+          chatClient.chatCompletionWithStructuredOutput(
               ChatPrompt.GenerateRecipesPrompt.SYSTEM_MESSAGE,
               userMessagePrompt,
               context,
-              ModelType.HCX_005);
-      if ("stop".equals(response.finishReason())) {
-        return response.message();
-      }
-      throw new RuntimeException("Invalid finish reason.");
+              JsonSchemaGenerator.generate(GeneratedRecipesResponse.class),
+              ModelType.HCX_007);
+      return objectMapper.readValue(response.message(), GeneratedRecipesResponse.class);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
-      return "";
+      throw new RuntimeException("Invalid finish reason.");
+    }
+  }
+
+  public String generateResponseMessage(
+      String reason, ConversationContext context, UserMessage userMessage, String systemMessage) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.USER_MESSAGE_TEMPLATE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("reason", reason);
+                      this.put("userMessage", userMessage.getMessage());
+                    }
+                  });
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(systemMessage, userMessagePrompt, context, ModelType.HCX_005);
+      return response.message();
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Invalid finish reason.");
     }
   }
 }
