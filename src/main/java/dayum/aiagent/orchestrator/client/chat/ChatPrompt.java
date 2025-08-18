@@ -63,6 +63,7 @@ public class ChatPrompt {
 			- 특정 요리/카테고리 탐색: "김치볶음밥/한식/10분 완성/저예산 레시피 추천"
 			- 가용 재료 소진/냉장고 파먹기: "집에 있는 재료로 대충 추천"
 			- 레시피 추천 의도지만 PANTRY가 없으면 대신 **SHOW_CONTEXT**로 안내(콘텍스트 확인/등록 유도).
+			- "다른" 같은 단어가 요청에 존재시 GENERATE_DIET_RECIPE사용. RECOMMEND_DIET_RECIPE 절대 사용 금지
 
 		  - GENERATE_DIET_RECIPE (ComposeNewRecipe - 신규 생성):
 			- 포함 조건: CURRENT_CONTEXT_KEY 에 **PANTRY** 존재 **AND** 다음 중 하나 이상 충족:
