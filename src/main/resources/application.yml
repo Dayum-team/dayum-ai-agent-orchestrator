@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+jwt:
+  secret: ${JWT_SECRET}
+  expirySeconds: 3600
+
 spring:
   application:
     name: dayum-ai-agent-orchestrator
