@@ -24,7 +24,7 @@ public class Orchestrator {
 
   public List<PlaybookResult> runTurn(ConversationContext context, UserMessage userMessage) {
     List<PlaybookPlanResult> plans = planner.planning(context, userMessage);
-    log.info("Playbook plans : {}", plans);
+    log.info("✅✅✅✅ Playbook plans : {}", plans);
     List<PlaybookResult> results = new ArrayList<>();
 
     for (PlaybookPlanResult plan : plans) {

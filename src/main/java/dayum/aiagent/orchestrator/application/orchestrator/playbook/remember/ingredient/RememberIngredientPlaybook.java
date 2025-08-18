@@ -50,8 +50,12 @@ public class RememberIngredientPlaybook implements Playbook {
       extractedIngredients.addAll(response.ingredients());
     }
     if (!userMessage.message().isEmpty()) {
+      log.info("✅✅✅✅✅ user message: {}", userMessage.getMessage());
       var response = chatClientService.extractIngredientsFromText(reason, userMessage.getMessage());
-      extractedIngredients.addAll(response.ingredients());
+      log.info("✅✅✅✅✅ extracted ingredients from text: {}", response.ingredients());
+      if (response != null && response.ingredients() != null) {
+        extractedIngredients.addAll(response.ingredients());
+      }
     }
     if (extractedIngredients.isEmpty()) {
       return responseBuilder.createNoIngredientsResponse();
