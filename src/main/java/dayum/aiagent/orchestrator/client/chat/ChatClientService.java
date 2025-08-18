@@ -161,12 +161,11 @@ public class ChatClientService {
                     }
                   });
       ChatCompletionResponse response =
-          chatClient.chatCompletionWithStructuredOutput(
+          chatClient.chatCompletion(
               ChatPrompt.ExtractIngredientPrompt.SYSTEM_MESSAGE_FOR_TEXT,
               userMessagePrompt,
-              JsonSchemaGenerator.generate(ExtractIngredientsResponse.class),
-              ModelType.HCX_007);
-      log.info("✅✅✅✅✅ ExtractIngredientsResponse {}", response);
+              ModelType.HCX_005);
+      log.info("✅ ExtractIngredientsResponse {}", response);
       return objectMapper.readValue(response.message(), ExtractIngredientsResponse.class);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
