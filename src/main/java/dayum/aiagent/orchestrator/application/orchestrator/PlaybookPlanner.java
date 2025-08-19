@@ -21,8 +21,8 @@ public class PlaybookPlanner {
   private final ChatClientService chatClientService;
 
   public List<PlaybookPlanResult> planning(ConversationContext context, UserMessage userMessage) {
-    if (userMessage.selectQuickRely() != null) {
-      return switch (userMessage.selectQuickRely()) {
+    if (userMessage.selectQuickReply() != null) {
+      return switch (userMessage.selectQuickReply()) {
         case PICK_THIS -> build(PlaybookType.SELECTION_ACK, "마음에 들어! QuickReply 를 선택해 최종 레시피 선택완료");
         case FIND_ALTERNATIVES, GENERATE_FROM_INGREDIENTS ->
             build(PlaybookType.GENERATE_DIET_RECIPE, "새로운 레시피 생성을 요청");

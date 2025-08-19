@@ -3,12 +3,12 @@ package dayum.aiagent.orchestrator.common.vo;
 import dayum.aiagent.orchestrator.common.enums.QuickReply;
 import jakarta.annotation.Nullable;
 
-public record UserMessage(String message, @Nullable QuickReply selectQuickRely, String imageUrl) {
+public record UserMessage(String message, @Nullable QuickReply selectQuickReply, String imageUrl) {
 
   public String getMessage() {
-    if (selectQuickRely == null) {
+    if (selectQuickReply == null) {
       return message;
     }
-    return message + "\n" + selectQuickRely.getDisplayMessage();
+    return message + "\n" + selectQuickReply.getDisplayMessage();
   }
 }
