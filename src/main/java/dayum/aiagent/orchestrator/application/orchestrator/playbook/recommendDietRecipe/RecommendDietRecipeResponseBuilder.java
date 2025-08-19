@@ -109,7 +109,7 @@ public class RecommendDietRecipeResponseBuilder {
   }
 
   private void appendNutritionInfo(StringBuilder message, RecommendContentsResponse recipe) {
-    message.append(String.format("🔥 칼로리: %.0fkcal\n", recipe.calories()));
+    message.append(String.format("🔥 칼로리: %.0fkcal · ", recipe.calories()));
     message.append(
         String.format(
             "📊 영양성분: 탄수화물 %.0fg · 단백질 %.0fg · 지방 %.0fg\n\n",
