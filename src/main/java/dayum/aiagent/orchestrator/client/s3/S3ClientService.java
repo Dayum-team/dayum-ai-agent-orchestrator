@@ -16,7 +16,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 public class S3ClientService {
 
   private final S3Client s3Client;
-  private final NcpProperties ncp; // ncp.s3Endpoint / ncp.s3Bucket 등
+  private final NcpProperties ncp;
 
   public String uploadBytes(String prefix, String filename, byte[] data) {
     return uploadBytes(prefix, filename, data, null);
@@ -25,10 +25,8 @@ public class S3ClientService {
   public String uploadBytes(String prefix, String filename, byte[] data, @Nullable String contentType) {
     String bucket = ncp.getS3Bucket();
 
-    // prefix 정리
     String cleanPrefix = (prefix == null) ? "" : prefix.replaceAll("^/+", "").replaceAll("/+$", "");
 
-    // 파일명 정제 + 충돌 방지 키 생성
     String safeName = (filename == null || filename.isBlank())
         ? "file"
         : filename.replaceAll("[^a-zA-Z0-9._-]", "_");
@@ -42,7 +40,7 @@ public class S3ClientService {
     PutObjectRequest.Builder put = PutObjectRequest.builder()
         .bucket(bucket)
         .key(key)
-        .acl(ObjectCannedACL.PUBLIC_READ); // 버킷이 public-read가 아닐 경우 제거
+        .acl(ObjectCannedACL.PUBLIC_READ);
 
     if (contentType != null && !contentType.isBlank()) {
       put.contentType(contentType);
@@ -50,7 +48,6 @@ public class S3ClientService {
 
     s3Client.putObject(put.build(), RequestBody.fromBytes(data));
 
-    // 퍼블릭 URL (NCP 엔드포인트 기반)
     return ncp.getS3Endpoint().replaceAll("/+$", "") + "/" + bucket + "/" + key;
   }
 }

@@ -13,9 +13,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import dayum.aiagent.orchestrator.application.conversation.ConversationService;
-import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
-import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,8 +38,8 @@ public class AiChatHandler extends TextWebSocketHandler {
     final String mimeType;
     final long size;
     final int totalChunks;
-    final String sha256;      // optional
-    final byte[][] chunks;    // 각 청크(바이너리)
+    final String sha256;
+    final byte[][] chunks;
     long receivedBytes = 0;
     long lastTouchMs = System.currentTimeMillis();
     UploadSession(long memberId, String filename, String mimeType, long size, int totalChunks, String sha256) {
@@ -99,11 +96,11 @@ public class AiChatHandler extends TextWebSocketHandler {
   }
   private void handleFileStart(WebSocketSession s, long memberId, Map<String, Object> in) {
     String uploadId = str(in.get("uploadId"));
-    String filename  = str(in.get("filename"));   // ← 클라이언트는 'filename'로 보내야 합니다
+    String filename  = str(in.get("filename"));
     String mimeType  = str(in.get("mimeType"));
     Number sizeN     = (Number) in.get("size");
     Number totalN    = (Number) in.get("totalChunks");
-    String sha256    = str(in.get("sha256"));     // 선택
+    String sha256    = str(in.get("sha256"));
 
     if (uploadId == null || filename == null || mimeType == null || sizeN == null || totalN == null) {
       sendErr(s, "BAD_FORMAT", "uploadId/filename/mimeType/size/totalChunks 필수"); return;
@@ -150,7 +147,6 @@ public class AiChatHandler extends TextWebSocketHandler {
     if (us == null) { sendErr(s, "UPLOAD_NOT_FOUND", "세션 없음"); return; }
     if (us.memberId != memberId) { sendErr(s, "FORBIDDEN", "본인 업로드만 가능"); return; }
 
-    // 누락 청크 확인
     for (int i = 0; i < us.totalChunks; i++) {
       if (us.chunks[i] == null) { sendErr(s, "CHUNK_MISSING", "누락 청크 index=" + i); return; }
     }
@@ -158,7 +154,6 @@ public class AiChatHandler extends TextWebSocketHandler {
       sendErr(s, "SIZE_MISMATCH", "수신 크기 이상"); uploads.remove(uploadId); return;
     }
 
-    // 조립
     byte[] all = new byte[(int) us.receivedBytes];
     int pos = 0;
     for (int i = 0; i < us.totalChunks; i++) {
@@ -166,7 +161,6 @@ public class AiChatHandler extends TextWebSocketHandler {
       pos += us.chunks[i].length;
     }
 
-    // (선택) 무결성 검사
     if (us.sha256 != null) {
       String calc = sha256Hex(all);
       if (!calc.equalsIgnoreCase(us.sha256)) {
@@ -174,7 +168,6 @@ public class AiChatHandler extends TextWebSocketHandler {
       }
     }
 
-    // S3 업로드 (경로 예: chat/{memberId}/yyyy/MM/dd/uuid.ext)
     String datePrefix = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")).toString().replace("-", "/");
     String prefix = "chat/" + memberId + "/" + datePrefix;
 
@@ -187,7 +180,6 @@ public class AiChatHandler extends TextWebSocketHandler {
       return;
     }
 
-    // USER 메시지 DB 저장(텍스트로 URL만 남김) + 업로드 브로드캐스트(미리보기)
     var savedUser = chatService.saveUser(memberId, "[file] " + url, null);
     Map<String,Object> userOut = Map.of(
         "event","receiveMessage",
@@ -203,12 +195,10 @@ public class AiChatHandler extends TextWebSocketHandler {
     );
     broadcast(memberId, userOut);
 
-    // AI 호출: 이미지/영상 URL을 UserMessage.imageUrl에 전달
     String sessionId = getSessionId(s);
     UserMessage mediaMsg = new UserMessage(null, null, url);
     List<PlaybookResult> results = conversationService.chat(memberId, sessionId, mediaMsg);
 
-    // SYSTEM 저장/브로드캐스트
     if (results != null) {
       for (PlaybookResult r : results) {
         String resp = extractText(r);
@@ -227,7 +217,6 @@ public class AiChatHandler extends TextWebSocketHandler {
           );
           broadcast(memberId, aiOut);
         } else {
-          // 텍스트가 아니면 범용 브로드캐스트
           broadcastAiResultGeneric(memberId, r);
         }
       }
@@ -251,7 +240,6 @@ public class AiChatHandler extends TextWebSocketHandler {
     long idleMs = UPLOAD_IDLE_TIMEOUT.toMillis();
     uploads.entrySet().removeIf(e -> now - e.getValue().lastTouchMs > idleMs);
   }
-  // ================== 텍스트 메시지 → AI 호출 ==================
   private void handleSendTextMessage(WebSocketSession s, long memberId, Map<String, Object> in) {
     String content  = str(in.get("content"));
     String clientId = str(in.get("clientMessageId"));
@@ -279,11 +267,11 @@ public class AiChatHandler extends TextWebSocketHandler {
     Map<String,Object> out = Map.of(
         "event","receiveMessage",
         "message", Map.of(
-            "messageId", savedAi.getChatId(),   // ✅ 항상 DB id 사용
+            "messageId", savedAi.getChatId(),
             "roomId", memberId,
             "role", "SYSTEM",
             "type", "text",
-            "content", text,                     // ✅ 항상 content 포함
+            "content", text,
             "createdAt", savedAi.getCreatedAt().toString()
         )
     );
@@ -306,7 +294,7 @@ public class AiChatHandler extends TextWebSocketHandler {
     String content = extractText(r);
     String mediaUrl = extractMediaUrl(r);
     if (mediaUrl != null) {
-      type = guessMediaType(r); // "image"/"video" 등
+      type = guessMediaType(r);
     }
     Map<String,Object> msg = new HashMap<>();
     msg.put("messageId", -1);
@@ -332,7 +320,7 @@ public class AiChatHandler extends TextWebSocketHandler {
 
   private String extractMediaUrl(PlaybookResult r) {
     try {
-      var m = r.getClass().getMethod("getMediaUrl");     // 선택적
+      var m = r.getClass().getMethod("getMediaUrl");
       Object v = m.invoke(r);
       if (v instanceof String s && !s.isBlank()) return s;
     } catch (Exception ignored) {}
@@ -341,7 +329,7 @@ public class AiChatHandler extends TextWebSocketHandler {
 
   private String guessMediaType(PlaybookResult r) {
     try {
-      var m = r.getClass().getMethod("getType");         // 선택적
+      var m = r.getClass().getMethod("getType");
       Object v = m.invoke(r);
       if (v instanceof String s && !s.isBlank()) return s;
     } catch (Exception ignored) {}

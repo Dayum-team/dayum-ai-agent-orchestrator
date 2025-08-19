@@ -17,8 +17,8 @@ public class S3ClientConfig {
   @Bean
   public S3Client ncpS3Client(NcpProperties ncp) {
     return S3Client.builder()
-        .endpointOverride(URI.create(ncp.getS3Endpoint())) // ex) https://kr.object.ncloudstorage.com
-        .region(Region.of(ncp.getRegion()))                // ex) ap-northeast-2
+        .endpointOverride(URI.create(ncp.getS3Endpoint()))
+        .region(Region.of(ncp.getRegion()))
         .credentialsProvider(
             StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(ncp.getAccessKey(), ncp.getSecretKey())
@@ -26,8 +26,8 @@ public class S3ClientConfig {
         )
         .serviceConfiguration(
             S3Configuration.builder()
-                .pathStyleAccessEnabled(true)      // NCP는 path-style 권장
-                .checksumValidationEnabled(false)  // 네트워크 환경 따라 끔
+                .pathStyleAccessEnabled(true)
+                .checksumValidationEnabled(false)
                 .build()
         )
         .build();
