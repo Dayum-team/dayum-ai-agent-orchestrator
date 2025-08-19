@@ -1,5 +1,6 @@
 package dayum.aiagent.orchestrator.client.chat.clova;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.client.chat.ChatClient;
@@ -25,6 +26,7 @@ public class ClovaStudioChatClient implements ChatClient {
 
   private final Handlebars handlebars = new Handlebars();
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
   private final ClovaStudioProperties properties;
   private final RestClient restClient;
 
@@ -33,7 +35,19 @@ public class ClovaStudioChatClient implements ChatClient {
     try {
       var request = ChatCompletionRequest.of(modelType, systemMessage, userMessage);
       var response = this.sendRequest(request, modelType);
-      log.info("Chat completion request : {}", request);
+      log.info("Chat completion response : {}", response);
+      return this.convert(response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public ChatCompletionResponse chatCompletionWithImage(
+      String systemMessage, String userMessage, String imageUrl, ModelType modelType) {
+    try {
+      var request = ChatCompletionRequest.ofImage(modelType, systemMessage, userMessage, imageUrl);
+      var response = this.sendRequest(request, modelType);
       log.info("Chat completion response : {}", response);
       return this.convert(response);
     } catch (Exception e) {
@@ -52,13 +66,14 @@ public class ClovaStudioChatClient implements ChatClient {
                     {
                       this.put("rollingSummary", context.rollingSummary());
                       this.put("shortTermContext", context.shortTermContexts());
-                      this.put("currentContextKey", context.contexts().keySet());
+                      this.put(
+                          "currentContextKey",
+                          objectMapper.writeValueAsString(context.contexts().keySet()));
                     }
                   });
       var request =
           ChatCompletionRequest.of(modelType, systemMessage, contextMessage + userMessage);
       var response = this.sendRequest(request, modelType);
-      log.info("Chat completion request : {}", request);
       log.info("Chat completion response : {}", response);
       return this.convert(response);
     } catch (Exception e) {
@@ -78,6 +93,21 @@ public class ClovaStudioChatClient implements ChatClient {
 
   @Override
   public ChatCompletionResponse chatCompletionWithStructuredOutput(
+      String systemMessage, String userMessage, JsonSchema outputSchema, ModelType modelType) {
+    try {
+      var request =
+          ChatCompletionRequest.forStructuredOutputs(
+              modelType, systemMessage, userMessage, outputSchema);
+      var response = this.sendRequest(request, modelType);
+      log.info("Chat completion response : {}", response);
+      return this.convert(response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public ChatCompletionResponse chatCompletionWithStructuredOutput(
       String systemMessage,
       String userMessage,
       ConversationContext context,
@@ -92,16 +122,13 @@ public class ClovaStudioChatClient implements ChatClient {
                     {
                       this.put("rollingSummary", context.rollingSummary());
                       this.put("shortTermContext", context.shortTermContexts());
-                      this.put("currentContextKey", context.contexts().keySet());
+                      this.put(
+                          "currentContextKey",
+                          objectMapper.writeValueAsString(context.contexts().keySet()));
                     }
                   });
-      var request =
-          ChatCompletionRequest.forStructuredOutputs(
-              modelType, systemMessage, contextMessage + userMessage, outputSchema);
-      var response = this.sendRequest(request, modelType);
-      log.info("Chat completion request : {}", request);
-      log.info("Chat completion response : {}", response);
-      return this.convert(response);
+      return this.chatCompletionWithStructuredOutput(
+          systemMessage, contextMessage + userMessage, outputSchema, modelType);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

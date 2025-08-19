@@ -12,6 +12,7 @@ import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.common.GuardrailPlaybook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.common.SmallTalkPlaybook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.generateDietRecipe.GenerateDietRecipePlaybook;
+import dayum.aiagent.orchestrator.application.orchestrator.playbook.remember.ingredient.RememberIngredientPlaybook;
 import dayum.aiagent.orchestrator.application.tools.ToolRegistry;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
@@ -33,7 +34,7 @@ public class TestController {
   private final ToolRegistry toolRegistry;
   private final ObjectMapper objectMapper;
   private final PlaybookPlanner planner;
-  private final GuardrailPlaybook playbook;
+  private final RememberIngredientPlaybook playbook;
   private final ConversationService conversationService;
 
   @PostMapping("/test/chat")

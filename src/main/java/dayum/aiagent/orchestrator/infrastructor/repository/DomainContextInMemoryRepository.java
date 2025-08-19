@@ -3,6 +3,8 @@ package dayum.aiagent.orchestrator.infrastructor.repository;
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ContextValue;
 import dayum.aiagent.orchestrator.application.context.port.DomainContextRepository;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public class DomainContextInMemoryRepository implements DomainContextRepository {
 
   private final AtomicReference<Map<String, Map<ContextType, ContextValue>>> contexts =
-      new AtomicReference<>();
+      new AtomicReference<>(new HashMap<>());
 
   @Override
   public Map<ContextType, ContextValue> fetchBy(String sessionId) {

@@ -43,4 +43,12 @@ public sealed interface ChatCompletionRequest
       case HCX_007 -> ChatCompletionHcx007Request.of(systemMessage, userMessage, responseSchema);
     };
   }
+
+  static ChatCompletionRequest ofImage(
+      ModelType type, String systemMessage, String userMessage, String imageUrl) {
+    return switch (type) {
+      case HCX_005 -> ChatCompletionHcx005Request.ofImage(systemMessage, userMessage, imageUrl);
+      case HCX_007 -> throw new RuntimeException();
+    };
+  }
 }

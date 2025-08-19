@@ -10,6 +10,9 @@ public interface ChatClient {
   ChatCompletionResponse chatCompletion(
       String systemMessage, String userMessage, ModelType modelType);
 
+  ChatCompletionResponse chatCompletionWithImage(
+      String systemMessage, String userMessage, String imageUrl, ModelType modelType);
+
   ChatCompletionResponse chatCompletion(
       String systemMessage, String userMessage, ConversationContext context, ModelType modelType);
 
@@ -18,6 +21,12 @@ public interface ChatClient {
       String userMessage,
       String context,
       List<ToolSchema> toolSchemas,
+      ModelType modelType);
+
+  ChatCompletionResponse chatCompletionWithStructuredOutput(
+      String systemMessage,
+      String userMessage,
+      JsonSchema outputSchema,
       ModelType modelType);
 
   ChatCompletionResponse chatCompletionWithStructuredOutput(
