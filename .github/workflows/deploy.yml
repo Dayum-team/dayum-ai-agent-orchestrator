@@ -33,8 +33,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/dayum2-server:latest
-            ${{ secrets.DOCKER_USERNAME }}/dayum2-server:${{ steps.vars.outputs.SHA7 }}
+            ${{ secrets.DOCKER_USERNAME }}/dayum2-agent:latest
+            ${{ secrets.DOCKER_USERNAME }}/dayum2-agent:${{ steps.vars.outputs.SHA7 }}
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
