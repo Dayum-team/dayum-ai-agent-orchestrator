@@ -111,7 +111,7 @@ public class ChatPrompt {
 				  - 예7) (직전: "레시피 추천해줘" → 추천 제공됨) + "그럼 만들어줘" + CURRENT_CONTEXT_KEY=["PANTRY"] → GENERATE_DIET_RECIPE 1개.
 				  - 예7) "감자 들어가는 요리 추천해줘"처럼 식재료명과 추천을 요청시 REMEMBER_INGREDIENT -> RECOMMEND_DIET_RECIPE -> GENERATE_DIET_RECIPE
 				  - 예 8) "추천해줘"같은 단어가 있지만 "다른 레시피", "다른 요리" 등 "다른"같은 단어가 존재할 시 RECOMMEND_DIET_RECIPE를 사용하지 않고, GENERATE_DIET_RECIPE를 무조건 우선 사용
-				  
+
 			  """;
 
     public static final String USER_MESSAGE_TEMPLATE =
