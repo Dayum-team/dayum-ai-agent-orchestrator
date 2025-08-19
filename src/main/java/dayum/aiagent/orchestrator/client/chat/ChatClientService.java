@@ -6,6 +6,7 @@ import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.ExtractAttributeResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ExtractIngredientsResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.PlanningPlaybookResponse;
@@ -194,6 +195,34 @@ public class ChatClientService {
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException("Invalid finish reason.");
+    }
+  }
+
+  public ExtractAttributeResponse extractAttributeFromText(String reason, String message) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.ExtractAttributePrompt.SYSTEM_MESSAGE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("reason", reason);
+                      this.put("userMessage", message);
+                    }
+                  });
+
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(
+              userMessagePrompt,
+              message,
+              ModelType.HCX_005);
+
+      log.info("✅ ExtractAttributeResponse {}", response);
+
+      return objectMapper.readValue(response.message(), ExtractAttributeResponse.class);
+    } catch (Exception e) {
+      log.error("취향 추출 중 에러 발생: {}", e.getMessage(), e);
+      throw new RuntimeException("취향 추출에 실패했습니다.");
     }
   }
 }

@@ -1,13 +1,19 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook.remember.tasteattribute;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.TasteAttributeContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
+import dayum.aiagent.orchestrator.client.chat.ChatClientService;
+import dayum.aiagent.orchestrator.client.chat.dto.ExtractAttributeResponse;
+import dayum.aiagent.orchestrator.common.enums.QuickReply;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RememberTasteAttributePlaybook implements Playbook {
+
+  private final ChatClientService chatClientService;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()
@@ -38,7 +46,25 @@ public class RememberTasteAttributePlaybook implements Playbook {
 
   @Override
   public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
-    return null;
+    ExtractAttributeResponse response =
+        chatClientService.extractAttributeFromText(reason, userMessage.getMessage());
+    List<String> attributes = response.attributes();
+
+    String title = "✅ 접수 완료!";
+    String message = "알겠습니다. 다음 추천에 참고할게요!";
+
+    if (attributes != null && !attributes.isEmpty()) {
+      title = "😋 취향 분석 완료!";
+      String formattedAttributes =
+          attributes.stream().map(attr -> "[" + attr + "]").collect(Collectors.joining(", "));
+      message = formattedAttributes + " 다얌이 취향을 기억했습니다!";
+    }
+
+    return new PlaybookResult(
+        title,
+        message,
+        List.of(QuickReply.FIND_ALTERNATIVES, QuickReply.GENERATE_FROM_INGREDIENTS),
+        Map.of(ContextType.TASTE_ATTRIBUTE, new TasteAttributeContext(attributes)));
   }
 
   @Override
