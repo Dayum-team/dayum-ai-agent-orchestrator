@@ -1,6 +1,7 @@
 package dayum.aiagent.orchestrator.client.chat;
 
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookResult;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.schema.SchemaFactory.*;
 import java.util.List;
