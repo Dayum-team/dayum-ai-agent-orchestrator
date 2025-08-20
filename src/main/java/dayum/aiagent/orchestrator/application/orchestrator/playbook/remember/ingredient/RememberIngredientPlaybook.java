@@ -45,16 +45,21 @@ public class RememberIngredientPlaybook implements Playbook {
   @Override
   public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
     List<Ingredient> extractedIngredients = new ArrayList<>();
+
     if (userMessage.imageUrl() != null && !userMessage.imageUrl().isEmpty()) {
       var response = chatClientService.extractIngredientsFromImage(reason, userMessage.imageUrl());
-      extractedIngredients.addAll(response.ingredients());
+      if (response != null && response.ingredients() != null) {
+        extractedIngredients.addAll(response.ingredients());
+      }
     }
+
     if (!userMessage.message().isEmpty()) {
       var response = chatClientService.extractIngredientsFromText(reason, userMessage.getMessage());
       if (response != null && response.ingredients() != null) {
         extractedIngredients.addAll(response.ingredients());
       }
     }
+
     if (extractedIngredients.isEmpty()) {
       return responseBuilder.createNoIngredientsResponse();
     }
