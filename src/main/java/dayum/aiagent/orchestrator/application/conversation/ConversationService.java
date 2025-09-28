@@ -19,10 +19,8 @@ public class ConversationService {
 
   public List<PlaybookResult> chat(long memberId, String sessionId, UserMessage userMessage) {
     ConversationContext context = contextStoreService.fetchBeforeContext(memberId, sessionId);
-    System.out.println("context = " + context.contexts());
     List<PlaybookResult> result = orchestrator.runTurn(context, userMessage);
     contextStoreService.update(sessionId, context, userMessage, ""); // TODO
-    System.out.println("context = " + context.contexts());
     return result;
   }
 }

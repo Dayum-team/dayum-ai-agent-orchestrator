@@ -11,7 +11,7 @@ public record IngredientResponse(
     Double proteins,
     Double fats) {
 
-	public Ingredient toIngredient() {
-		return new Ingredient(name, String.valueOf(quantity));
-	}
+  public Ingredient toIngredient() {
+    return new Ingredient(name, String.valueOf(quantity));
+  }
 }

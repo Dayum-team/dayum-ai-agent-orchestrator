@@ -213,10 +213,7 @@ public class ChatClientService {
                   });
 
       ChatCompletionResponse response =
-          chatClient.chatCompletion(
-              userMessagePrompt,
-              message,
-              ModelType.HCX_005);
+          chatClient.chatCompletion(userMessagePrompt, message, ModelType.HCX_005);
 
       log.info("✅ ExtractAttributeResponse {}", response);
 
