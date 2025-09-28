@@ -1,5 +1,6 @@
 package dayum.aiagent.orchestrator.application.context.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
@@ -9,7 +10,9 @@ public record RecommendedRecipeContext(List<RecommendedRecipe> recipes) implemen
   @Override
   public ContextValue merge(ContextValue newValue) {
     if (newValue instanceof RecommendedRecipeContext) {
-      this.recipes.addAll(((RecommendedRecipeContext) newValue).recipes);
+      var mergedRecipes = new ArrayList<>(this.recipes);
+      mergedRecipes.addAll(((RecommendedRecipeContext) newValue).recipes);
+      return new RecommendedRecipeContext(mergedRecipes);
     }
     return this;
   }

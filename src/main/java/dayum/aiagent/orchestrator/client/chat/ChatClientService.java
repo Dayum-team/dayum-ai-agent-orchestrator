@@ -2,6 +2,8 @@ package dayum.aiagent.orchestrator.client.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
+
+import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
@@ -111,6 +113,11 @@ public class ChatClientService {
                       this.put(
                           "ingredientsJson",
                           new Handlebars.SafeString(objectMapper.writeValueAsString(ingredients)));
+                      this.put(
+                          "recommendedRecipes",
+                          new Handlebars.SafeString(
+                              objectMapper.writeValueAsString(
+                                  context.getContexts().get(ContextType.RECOMMENDED_RECIPE))));
                       this.put("recipeCount", 3);
                     }
                   });

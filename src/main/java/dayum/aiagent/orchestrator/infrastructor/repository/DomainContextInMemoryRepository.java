@@ -19,7 +19,7 @@ public class DomainContextInMemoryRepository implements DomainContextRepository 
 
   @Override
   public Map<ContextType, ContextValue> fetchBy(String sessionId) {
-    return this.contexts.get().getOrDefault(sessionId, Map.of());
+    return this.contexts.get().getOrDefault(sessionId, new HashMap<>());
   }
 
   @Override

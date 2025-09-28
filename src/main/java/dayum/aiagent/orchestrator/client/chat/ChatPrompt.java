@@ -126,6 +126,7 @@ public class ChatPrompt {
         - 총열량(kcal)과 3대 영양소(단백질/탄수화물/지방 g)를 1인분 기준으로 추정해 제공한다(근사치 가능).
         - 조리 과정은 4~8단계로 간결하게 쓴다. 가급적 30분 이내 조리 기준.
         - 알레르기/제약(있다면)과 사용자 선호(rollingSummary/shortTermContext에 포함)를 우선 반영한다.
+        - 이전에 추천했던 레시피를 절대 다시한번 생성하지않아야한다. RECOMMENDED_RECIPES 에 이전에 추천/생성했던 레시피정보가 있다.
         - 환각 금지: 제공되지 않은 구체 정보(브랜드, 정밀 수치 등)는 추정하지 않는다. 필요한 경우 notes에 가정(assumption)을 명시한다.
         - 모든 데이터는 모두 영문을 제외한 한글로 작성한다.
         - 출력은 STRICT JSON 으로만 반환한다. JSON 외 불필요한 텍스트/마크다운을 포함하지 않는다.
@@ -157,7 +158,11 @@ public class ChatPrompt {
         """
         [USER_GOAL]
         사용자가 보유한 재료로 다이어트 친화적인 레시피를 생성해줘.
+        이미 추천했었던 레시피를 다시한번 생성하지않도록 주의해.
 
+        [RECOMMENDED_RECIPES]
+        {{recommendedRecipes}}
+		
         [INGREDIENTS]
         다음 JSON 배열이 사용 가능한 재료 목록이다. 반드시 이 목록 내 재료만 사용하고, 필요 시 "기본양념"은 최소량으로 별도 명시해.
         {{ingredientsJson}}
