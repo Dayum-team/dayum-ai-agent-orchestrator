@@ -10,26 +10,25 @@ import dayum.aiagent.orchestrator.application.orchestrator.playbook.Playbook;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
 
-
 public class DescriptionDetailedRecipePlaybook implements Playbook {
 
-	@Override
-	public PlaybookCatalog getCatalog() {
-		return null;
-	}
+  @Override
+  public PlaybookCatalog getCatalog() {
+    return null;
+  }
 
-	@Override
-	public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
-		return null;
-	}
+  @Override
+  public PlaybookResult play(String reason, ConversationContext context, UserMessage userMessage) {
+    return null;
+  }
 
-	@Override
-	public PlaybookType getType() {
-		return null;
-	}
+  @Override
+  public PlaybookType getType() {
+    return null;
+  }
 
-	@Override
-	public List<ContextType> getRequiresContext() {
-		return List.of();
-	}
+  @Override
+  public List<ContextType> getRequiresContext() {
+    return List.of();
+  }
 }
