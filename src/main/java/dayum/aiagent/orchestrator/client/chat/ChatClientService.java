@@ -9,6 +9,7 @@ import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ExtractAttributeResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ExtractIngredientsResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.PlanningHowToRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.PlanningPlaybookResponse;
 import dayum.aiagent.orchestrator.client.chat.schema.JsonSchemaGenerator;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
@@ -223,6 +224,33 @@ public class ChatClientService {
     } catch (Exception e) {
       log.error("취향 추출 중 에러 발생: {}", e.getMessage(), e);
       throw new RuntimeException("취향 추출에 실패했습니다.");
+    }
+  }
+
+  public PlanningHowToRecommendResponse planningHowToRecommend(String reason, UserMessage message) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.PlanningHowToRecommendPrompt.USER_MESSAGE_TEMPLATE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("reason", reason);
+                      this.put("userMessage", message);
+                    }
+                  });
+
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(
+              ChatPrompt.PlanningHowToRecommendPrompt.SYSTEM_MESSAGE,
+              userMessagePrompt,
+              ModelType.HCX_007);
+
+      log.info("✅ PlanningHowToRecommend {}", response);
+      return objectMapper.readValue(response.message(), PlanningHowToRecommendResponse.class);
+    } catch (Exception e) {
+      log.error("에러 발생: {}", e.getMessage(), e);
+      throw new RuntimeException("실패했습니다.", e);
     }
   }
 }

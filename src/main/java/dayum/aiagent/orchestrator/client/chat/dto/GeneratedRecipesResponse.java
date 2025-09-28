@@ -8,6 +8,7 @@ public record GeneratedRecipesResponse(
 
   public record GeneratedRecipe(
       String title,
+      String description,
       int servings,
       int timeMinutes,
       int caloriesKcal,
