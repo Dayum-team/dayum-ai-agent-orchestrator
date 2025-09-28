@@ -60,7 +60,6 @@ public class ChatClientService {
                               objectMapper.writeValueAsString(context.contexts().keySet())));
                     }
                   });
-      log.info("userMessagePrompt {}", userMessagePrompt);
       ChatCompletionResponse response =
           chatClient.chatCompletionWithStructuredOutput(
               ChatPrompt.PlannerPrompt.SYSTEM_MESSAGE,
@@ -174,7 +173,6 @@ public class ChatClientService {
               ChatPrompt.ExtractIngredientPrompt.SYSTEM_MESSAGE_FOR_TEXT,
               userMessagePrompt,
               ModelType.HCX_005);
-      log.info("✅ ExtractIngredientsResponse {}", response);
       return objectMapper.readValue(response.message(), ExtractIngredientsResponse.class);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
@@ -221,9 +219,6 @@ public class ChatClientService {
 
       ChatCompletionResponse response =
           chatClient.chatCompletion(userMessagePrompt, message, ModelType.HCX_005);
-
-      log.info("✅ ExtractAttributeResponse {}", response);
-
       return objectMapper.readValue(response.message(), ExtractAttributeResponse.class);
     } catch (Exception e) {
       log.error("취향 추출 중 에러 발생: {}", e.getMessage(), e);
@@ -249,12 +244,9 @@ public class ChatClientService {
               ChatPrompt.PlanningHowToRecommendPrompt.SYSTEM_MESSAGE,
               userMessagePrompt,
               ModelType.HCX_007);
-
-      log.info("✅ PlanningHowToRecommend {}", response);
       return objectMapper.readValue(response.message(), PlanningHowToRecommendResponse.class);
     } catch (Exception e) {
-      log.error("에러 발생: {}", e.getMessage(), e);
-      throw new RuntimeException("실패했습니다.", e);
+      throw new RuntimeException(e);
     }
   }
 }
