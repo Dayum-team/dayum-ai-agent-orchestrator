@@ -33,7 +33,7 @@ public class ConversationContext {
             mergedContexts.put(type, context.merge(newValue));
           }
         });
-    this.contexts = mergedContexts;
+    this.contexts.putAll(mergedContexts);
   }
 
   public Map<ContextType, ContextValue> contexts() {

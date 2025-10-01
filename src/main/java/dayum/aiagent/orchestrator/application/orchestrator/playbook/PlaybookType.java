@@ -1,7 +1,6 @@
 package dayum.aiagent.orchestrator.application.orchestrator.playbook;
 
 public enum PlaybookType {
-  GENERATE_DIET_RECIPE,
   GUARDRAIL,
   RECOMMEND_DIET_RECIPE,
   REMEMBER_INGREDIENT,
