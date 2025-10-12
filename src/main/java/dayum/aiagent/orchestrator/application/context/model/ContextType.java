@@ -5,3 +5,4 @@ public enum ContextType {
   TASTE_ATTRIBUTE,
   RECOMMENDED_RECIPE;
 }
+
