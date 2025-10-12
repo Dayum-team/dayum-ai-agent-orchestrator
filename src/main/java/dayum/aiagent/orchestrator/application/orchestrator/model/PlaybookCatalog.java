@@ -10,5 +10,5 @@ public record PlaybookCatalog(
     String action,
     List<String> trigger,
     List<String> requiresContext,
-	List<String> outputContext,
+    List<String> outputContext,
     List<String> cautions) {}
