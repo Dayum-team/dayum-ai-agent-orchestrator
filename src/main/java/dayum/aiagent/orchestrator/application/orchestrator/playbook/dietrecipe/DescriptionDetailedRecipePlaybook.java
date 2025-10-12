@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DescriptionDetailedRecipePlaybook implements Playbook {
 
   private final ChatClientService chatClientService;
-  private final ObjectMapper objectMapper;
 
   private static final PlaybookCatalog CATALOG =
       PlaybookCatalog.builder()

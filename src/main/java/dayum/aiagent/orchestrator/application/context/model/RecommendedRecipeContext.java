@@ -3,7 +3,6 @@ package dayum.aiagent.orchestrator.application.context.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 
 public record RecommendedRecipeContext(List<RecommendedRecipe> recipes) implements ContextValue {
