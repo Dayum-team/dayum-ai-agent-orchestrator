@@ -22,10 +22,9 @@ public class ChatController {
 
   @GetMapping("/history")
   public List<ChatMessageResponse> history(
-      @RequestHeader(value="X-User-Id", required=false) String user,
-      @RequestParam(defaultValue="50") int limit,
-      @RequestParam(required=false) Long before
-  ) {
+      @RequestHeader(value = "X-User-Id", required = false) String user,
+      @RequestParam(defaultValue = "50") int limit,
+      @RequestParam(required = false) Long before) {
     Long memberId = me(user);
     return chatService.history(memberId, before, limit).stream()
         .map(ChatMessageResponse::from)

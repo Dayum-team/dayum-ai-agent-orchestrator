@@ -62,7 +62,7 @@ public class RecommendDietRecipePlaybook implements Playbook {
             if (contents.isEmpty()) {
               yield convertGeneratedRecipes(
                   chatClientService
-                      .generateDietRecipes(context, pantryContext.ingredients())
+                      .generateDietRecipeSuggestions(context, pantryContext.ingredients())
                       .recipes());
             }
             yield convertRecommendedRecipes(contents);
@@ -70,7 +70,7 @@ public class RecommendDietRecipePlaybook implements Playbook {
           case "GENERATE" ->
               convertGeneratedRecipes(
                   chatClientService
-                      .generateDietRecipes(context, pantryContext.ingredients())
+                      .generateDietRecipeSuggestions(context, pantryContext.ingredients())
                       .recipes());
           default -> Collections.emptyList();
         };

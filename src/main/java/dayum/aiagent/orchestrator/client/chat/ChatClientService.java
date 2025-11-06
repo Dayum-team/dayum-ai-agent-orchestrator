@@ -5,14 +5,17 @@ import com.github.jknack.handlebars.Handlebars;
 
 import dayum.aiagent.orchestrator.application.context.model.ContextType;
 import dayum.aiagent.orchestrator.application.context.model.ConversationContext;
+import dayum.aiagent.orchestrator.application.context.model.RecommendedRecipeContext;
 import dayum.aiagent.orchestrator.application.orchestrator.model.PlaybookCatalog;
 import dayum.aiagent.orchestrator.application.orchestrator.playbook.PlaybookType;
 import dayum.aiagent.orchestrator.client.chat.dto.ChatCompletionResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ExtractAttributeResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.ExtractIngredientsResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.GeneratedRecipesResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.GeneratedSuggestionsResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.PlanningHowToRecommendResponse;
 import dayum.aiagent.orchestrator.client.chat.dto.PlanningPlaybookResponse;
+import dayum.aiagent.orchestrator.client.chat.dto.SelectRecipeResponse;
 import dayum.aiagent.orchestrator.client.chat.schema.JsonSchemaGenerator;
 import dayum.aiagent.orchestrator.common.vo.Ingredient;
 import dayum.aiagent.orchestrator.common.vo.UserMessage;
@@ -100,12 +103,12 @@ public class ChatClientService {
     }
   }
 
-  public GeneratedRecipesResponse generateDietRecipes(
+  public GeneratedRecipesResponse generateDietRecipeSuggestions(
       ConversationContext context, List<Ingredient> ingredients) {
     try {
       String userMessagePrompt =
           handlebars
-              .compileInline(ChatPrompt.GenerateRecipesPrompt.USER_MESSAGE_TEMPLATE)
+              .compileInline(ChatPrompt.GenerateRecipeSuggestionsPrompt.USER_MESSAGE_TEMPLATE)
               .apply(
                   new HashMap<String, Object>() {
                     {
@@ -122,7 +125,7 @@ public class ChatClientService {
                   });
       ChatCompletionResponse response =
           chatClient.chatCompletionWithStructuredOutput(
-              ChatPrompt.GenerateRecipesPrompt.SYSTEM_MESSAGE,
+              ChatPrompt.GenerateRecipeSuggestionsPrompt.SYSTEM_MESSAGE,
               userMessagePrompt,
               context,
               JsonSchemaGenerator.generate(GeneratedRecipesResponse.class),
@@ -247,6 +250,87 @@ public class ChatClientService {
       return objectMapper.readValue(response.message(), PlanningHowToRecommendResponse.class);
     } catch (Exception e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  public RecommendedRecipeContext.RecommendedRecipe selectRecipeFromList(
+      UserMessage userMessage, List<RecommendedRecipeContext.RecommendedRecipe> recipes) {
+    try {
+      String recipesJson = objectMapper.writeValueAsString(recipes);
+
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.SelectRecipePrompt.USER_MESSAGE_TEMPLATE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("recipesJson", new Handlebars.SafeString(recipesJson));
+                      this.put("userMessage", userMessage.getMessage());
+                    }
+                  });
+
+      ChatCompletionResponse response =
+          chatClient.chatCompletionWithStructuredOutput(
+              ChatPrompt.SelectRecipePrompt.SYSTEM_MESSAGE,
+              userMessagePrompt,
+              JsonSchemaGenerator.generate(SelectRecipeResponse.class),
+              ModelType.HCX_007);
+
+      SelectRecipeResponse selectResponse =
+          objectMapper.readValue(response.message(), SelectRecipeResponse.class);
+
+      if (selectResponse == null || selectResponse.selectedTitle() == null) {
+        return null;
+      }
+
+      return recipes.stream()
+          .filter(recipe -> recipe.title().equals(selectResponse.selectedTitle()))
+          .findFirst()
+          .orElse(null);
+
+    } catch (Exception e) {
+      log.error("사용자가 선택한 레시피를 분석하는 중 오류 발생", e);
+      return null;
+    }
+  }
+
+  public String generateDetailedRecipe(
+      ConversationContext context,
+      List<Ingredient> ingredients,
+      GeneratedSuggestionsResponse.Suggestion suggestion) {
+    try {
+      String userMessagePrompt =
+          handlebars
+              .compileInline(ChatPrompt.GenerateDetailedRecipePrompt.USER_MESSAGE_TEMPLATE)
+              .apply(
+                  new HashMap<String, Object>() {
+                    {
+                      this.put("selectedTitle", suggestion.title());
+                      this.put("selectedDescription", suggestion.description());
+                      this.put(
+                          "ingredientsJson",
+                          new Handlebars.SafeString(objectMapper.writeValueAsString(ingredients)));
+                      this.put(
+                          "recommendedRecipes",
+                          new Handlebars.SafeString(
+                              objectMapper.writeValueAsString(
+                                  context.getContexts().get(ContextType.RECOMMENDED_RECIPE))));
+                      this.put("recipeCount", 1);
+                    }
+                  });
+
+      ChatCompletionResponse response =
+          chatClient.chatCompletion(
+              ChatPrompt.GenerateDetailedRecipePrompt.SYSTEM_MESSAGE,
+              userMessagePrompt,
+              context,
+              ModelType.HCX_007);
+
+      return response.message();
+
+    } catch (Exception e) {
+      log.error("상세 레시피 생성 중 오류 발생", e);
+      throw new RuntimeException("Failed to generate detailed recipe.", e);
     }
   }
 }
