@@ -30,6 +30,9 @@ spring:
         default_batch_fetch_size: 1000
 
 ncp:
+  region: ap-northeast-2
+  s3-endpoint: https://kr.object.ncloudstorage.com
+  s3-bucket: dayum2-prod
   access-key: ${ncp.access-key}
   secret-key: ${ncp.secret-key}
   clova:
@@ -39,6 +42,8 @@ ncp:
 dayum-server:
   base-url: ${dayum-server.base-url}
   api-key: ${dayum-server.api-key}
+
+
 
 ---
 spring:
